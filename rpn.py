@@ -282,5 +282,23 @@ while True:
                     numbers = ""
                 display()
                 sleep(0.1)
+            if keydown(KEY_IMAGINARY):
+                pressed = True
+                if not numbers and results:
+                    results[0] = degrees(results[0])
+                elif numbers:
+                    add(degrees(numbers))
+                    numbers = ""
+                display()
+                sleep(0.1)
+            if keydown(KEY_FOUR):
+                pressed = True
+                if not numbers and results:
+                    results[0] = radians(results[0])
+                elif numbers:
+                    add(radians(numbers))
+                    numbers = ""
+                display()
+                sleep(0.1)
 
     sleep(0.17)
