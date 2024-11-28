@@ -46,6 +46,30 @@ def hms(dec):
     minutes = (dec-hours) * 60
     return hours + minutes/100
 
+# Hotkeys recap
+def toolbox():
+    # Title
+    fill_rect(27,26, 266,22, color(65,64,65))
+    fill_rect(28,27, 264,20, color(106,101,115))
+    draw_string(" HOTKEYS ", 115,28)
+    # Contents
+    fill_rect(27,48, 266,174, color(238,238,238))
+    fill_rect(28,49, 264,173, color(255,254,255))
+    draw_string("H: dec → h:min", 35,52)
+    fill_rect(28,74, 264,1, color(238,238,238))
+    draw_string("D: rad → deg     i : 1/x", 35,80)
+    draw_string("R: deg → rad     , :  ±", 35,100)
+    fill_rect(28,124, 264,1, color(238,238,238))
+    draw_string("C: °F → °C       ( : ROT", 35,130)
+    draw_string("F: °C → °F       ) : SWAP", 35,150)
+    fill_rect(28,174, 264,1, color(238,238,238))
+    draw_string("                EXE: DUP", 35,180)
+    
+    sleep(0.5)
+    while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
+        None
+    display()
+
 ##########################################
 
 results = []
@@ -91,8 +115,8 @@ while True:
         add(pi)
         display()
     
-    # RPN-specific: ENTER, DUP, ROT, SWAP
-    elif keydown(KEY_EXE):
+    # RPN-specific
+    elif keydown(KEY_EXE): # ENTER, DUP
         if numbers:
             add(float(numbers))
             numbers = ""
@@ -100,7 +124,7 @@ while True:
             dup = results[0]
             add(dup)
         display()
-    elif keydown(KEY_LEFTPARENTHESIS):
+    elif keydown(KEY_LEFTPARENTHESIS): # ROT
         if numbers:
             add(float(numbers))
             numbers = ""
@@ -110,10 +134,8 @@ while True:
             remove()
             results.reverse()
             add(rot)
-        else:
-            add(0)
         display()
-    elif keydown(KEY_RIGHTPARENTHESIS):
+    elif keydown(KEY_RIGHTPARENTHESIS): # SWAP
         if numbers:
             add(float(numbers))
             numbers = ""
@@ -121,8 +143,6 @@ while True:
             swap = results[0]
             results[0] = results[1]
             results[1] = swap
-        else:
-            add(0)
         display()
 
     # Drops stack item or deletes cipher
@@ -305,6 +325,15 @@ while True:
                     numbers = ""
                 display()
                 sleep(0.1)
+            if keydown(KEY_COSINE): # H: dec to HH:MM
+                pressed = True
+                if not numbers and results:
+                    results[0] = hms(results[0])
+                elif numbers:
+                    add(hms(float(numbers)))
+                    numbers = ""
+                display()
+                sleep(0.1)
             if keydown(KEY_IMAGINARY): # D: radians to degrees
                 pressed = True
                 if not numbers and results:
@@ -323,15 +352,28 @@ while True:
                     numbers = ""
                 display()
                 sleep(0.1)
-            if keydown(KEY_COSINE): # H: dec to HH:MM
+            if keydown(KEY_LOG): # C: Fahrenheit to Celsius
                 pressed = True
                 if not numbers and results:
-                    results[0] = hms(results[0])
+                    results[0] = (results[0] - 32) * 5/9
                 elif numbers:
-                    add(hms(float(numbers)))
+                    add((float(numbers) - 32) * 5/9)
                     numbers = ""
                 display()
                 sleep(0.1)
+            if keydown(KEY_POWER): # F: Celsius to Fahrenheit
+                pressed = True
+                if not numbers and results:
+                    results[0] = results[0] * 9/5 + 32
+                elif numbers:
+                    add(float(numbers) * 9/5 + 32)
+                    numbers = ""
+                display()
+                sleep(0.1)
+
+    # Hotkeys / Help
+    elif keydown(KEY_TOOLBOX):
+        toolbox()
 
     # Idle timeout before next inf. loop
     sleep(0.173)
