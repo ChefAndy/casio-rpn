@@ -3,13 +3,16 @@ from kandinsky import *
 from math import *
 from time import *
 
+# GUI: refreshes whole screen
 def display():
-    mem = 7
+    mem = 8
+    # STACK: limits to mem-1 items + input
     n = len(results)
-    if n > 6:
+    if n > mem-1:
         remove()
         n -= 1
     h = 222//mem
+    # GUI: line backgrounds
     fill_rect(0,0, 320,222, color(255,254,255))
     if n >= 2:
         fill_rect(0,1*h, 320,h, color(245,250,255))
@@ -17,20 +20,31 @@ def display():
         fill_rect(0,3*h, 320,h, color(245,250,255))
     if n >= 6:
         fill_rect(0,5*h, 320,h, color(245,250,255))
-    fill_rect(0,(mem-1)*h, 320,1, color(223,217,222))
+    #  GUI: displays stack items
     for line in range(n):
-        draw_string(str(results[n-1-line]), 10, h*line+6)
-    draw_string(numbers, 6,195)
+        draw_string(str(results[n-1-line]), 10, h*line+5)
+    # GUI: input field separation line
+    fill_rect(0,(mem-1)*h, 320,1, color(223,217,222))
+    # GUI: input field contents
+    draw_string(numbers, 6,197)
 
+# Removing something from the stack
 def remove():
     results.reverse()
     results.pop()
     results.reverse()
 
+#  Adding something to the stack
 def add(foo):
     results.reverse()
     results.append(foo)
     results.reverse()
+
+# Converting decimal to sexagesimal
+def hms(dec):
+    hours = int(dec)
+    minutes = (dec-hours) * 60
+    return hours + minutes/100
 
 ##########################################
 
@@ -39,6 +53,7 @@ numbers = ""
 
 display()
 while True:
+    # Type in numbers
     if keydown(KEY_ZERO):
         numbers += "0"
         display()
@@ -72,11 +87,11 @@ while True:
     elif keydown(KEY_DOT):
         numbers += "."
         display()
-
     elif keydown(KEY_PI) and not numbers:
         add(pi)
         display()
     
+    # RPN-specific: ENTER, DUP, ROT, SWAP
     elif keydown(KEY_EXE):
         if numbers:
             add(float(numbers))
@@ -85,7 +100,6 @@ while True:
             dup = results[0]
             add(dup)
         display()
-
     elif keydown(KEY_LEFTPARENTHESIS):
         if numbers:
             add(float(numbers))
@@ -111,6 +125,7 @@ while True:
             add(0)
         display()
 
+    # Drops stack item or deletes cipher
     elif keydown(KEY_BACKSPACE):
         if not numbers and results:
             remove()
@@ -118,8 +133,12 @@ while True:
             numbers = numbers[:-1]
         display()
 
+    # Unary operators
     elif keydown(KEY_EXP):
-        if not numbers and results:
+        # Inputs e
+        if not numbers and not results:
+            add(exp(1))
+        elif not numbers and results:
             results[0] = exp(results[0])
         elif numbers:
             add(exp(float(numbers)))
@@ -161,6 +180,7 @@ while True:
             numbers = ""
         display()
 
+    # SHIFT: reciprocal trig operators
     elif keydown(KEY_SHIFT):
         pressed = False
         draw_string("shift",270,0)
@@ -205,6 +225,7 @@ while True:
             numbers = ""
         display()
 
+    # Not labeled unary operators
     elif keydown(KEY_IMAGINARY):
         if not numbers and results:
             results[0] = 1/results[0]
@@ -220,6 +241,7 @@ while True:
             numbers = ""
         display()
 
+    # Binary operators
     elif keydown(KEY_PLUS):
         if not numbers and len(results)>=2:
             results[1] += results[0]
@@ -269,11 +291,12 @@ while True:
             numbers = ""
         display()
 
+    # ALPHA operators
     elif keydown(KEY_ALPHA):
         pressed = False
         draw_string("alpha",270,0)
         while not pressed:
-            if keydown(KEY_DOT):
+            if keydown(KEY_DOT): # !: factorial
                 pressed = True
                 if not numbers and results:
                     results[0] = factorial(int(results[0]))
@@ -282,23 +305,33 @@ while True:
                     numbers = ""
                 display()
                 sleep(0.1)
-            if keydown(KEY_IMAGINARY):
+            if keydown(KEY_IMAGINARY): # D: radians to degrees
                 pressed = True
                 if not numbers and results:
                     results[0] = degrees(results[0])
                 elif numbers:
-                    add(degrees(numbers))
+                    add(degrees(float(numbers)))
                     numbers = ""
                 display()
                 sleep(0.1)
-            if keydown(KEY_FOUR):
+            if keydown(KEY_FOUR): # R: degrees to radians
                 pressed = True
                 if not numbers and results:
                     results[0] = radians(results[0])
                 elif numbers:
-                    add(radians(numbers))
+                    add(radians(float(numbers)))
+                    numbers = ""
+                display()
+                sleep(0.1)
+            if keydown(KEY_COSINE): # H: dec to HH:MM
+                pressed = True
+                if not numbers and results:
+                    results[0] = hms(results[0])
+                elif numbers:
+                    add(hms(float(numbers)))
                     numbers = ""
                 display()
                 sleep(0.1)
 
-    sleep(0.17)
+    # Idle timeout before next inf. loop
+    sleep(0.173)
