@@ -46,6 +46,15 @@ def hms(dec):
     minutes = (dec-hours) * 60
     return hours + minutes/100
 
+# Finding the lowest prime divisor
+def prime_facto(n):
+    div = 2
+    while div**2 <= n:
+       if n % div == 0:
+           return div
+       div += 1
+    return 1
+
 # Hotkeys recap
 def toolbox():
     # Title
@@ -63,8 +72,8 @@ def toolbox():
     draw_string("C: °F → °C       ( : ROT", 35,130)
     draw_string("F: °C → °F       ) : SWAP", 35,150)
     fill_rect(28,174, 264,1, color(238,238,238))
-    draw_string("                EXE: DUP", 35,180)
-    
+    draw_string("P: prime fact.", 35,180)
+    draw_string("                EXE: DUP", 35,200)
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
         None
@@ -367,6 +376,16 @@ while True:
                     results[0] = results[0] * 9/5 + 32
                 elif numbers:
                     add(float(numbers) * 9/5 + 32)
+                    numbers = ""
+                display()
+                sleep(0.1)
+            if keydown(KEY_LEFTPARENTHESIS): # P: Prime factorisation
+                pressed = True
+                if not numbers and results:
+                    add(prime_facto(results[0]))
+                elif numbers:
+                    add(float(numbers))
+                    add(prime_facto(float(numbers)))
                     numbers = ""
                 display()
                 sleep(0.1)
