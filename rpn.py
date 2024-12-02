@@ -209,7 +209,7 @@ while True:
             numbers = ""
         display()
 
-    # SHIFT: reciprocal trig operators
+    # SHIFT: reciprocal trig, CLEAR
     elif keydown(KEY_SHIFT):
         pressed = False
         draw_string("shift",270,0)
@@ -237,6 +237,11 @@ while True:
                 elif numbers:
                     add(atan(float(numbers)))
                     numbers = ""
+                display()
+            if keydown(KEY_BACKSPACE):
+                pressed = True
+                results = []
+                numbers = ""
                 display()
 
     elif keydown(KEY_SQRT):
@@ -395,4 +400,4 @@ while True:
         toolbox()
 
     # Idle timeout before next inf. loop
-    sleep(0.173)
+    sleep(0.175)
