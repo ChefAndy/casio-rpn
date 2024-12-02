@@ -16,14 +16,14 @@ def display():
     # GUI: line backgrounds
     fill_rect(0,0, 320,222, color(255,254,255))
     if n >= 2:
-        fill_rect(0,1*h, 320,h, color(245,250,255))
+        fill_rect(0,5*h, 320,h, color(245,250,255))
     if n >= 4:
         fill_rect(0,3*h, 320,h, color(245,250,255))
     if n >= 6:
-        fill_rect(0,5*h, 320,h, color(245,250,255))
+        fill_rect(0,1*h, 320,h, color(245,250,255))
     #  GUI: displays stack items
     for line in range(n):
-        draw_string(str(results[n-1-line]), 10, h*line+5)
+        draw_string(str(results[line]), 10, h*(mem-2-line)+5)
     # GUI: input field separation line
     fill_rect(0,(mem-1)*h, 320,1, color(223,217,222))
     # GUI: input field contents
