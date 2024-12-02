@@ -1,6 +1,7 @@
 from ion import *
 from kandinsky import *
 from math import *
+from random import *
 from time import *
 
 # GUI: refreshes whole screen
@@ -27,6 +28,7 @@ def display():
     fill_rect(0,(mem-1)*h, 320,1, color(223,217,222))
     # GUI: input field contents
     draw_string(numbers, 6,197)
+    sleep(0.2)
 
 # Removing something from the stack
 def remove():
@@ -73,7 +75,7 @@ def toolbox():
     draw_string("F: °C → °F       ) : SWAP", 35,150)
     fill_rect(28,174, 264,1, color(238,238,238))
     draw_string("P: prime fact.", 35,180)
-    draw_string("                EXE: DUP", 35,200)
+    draw_string("?: random       EXE: DUP", 35,200)
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
         None
@@ -338,7 +340,6 @@ while True:
                     add(factorial(int(numbers)))
                     numbers = ""
                 display()
-                sleep(0.1)
             if keydown(KEY_COSINE): # H: dec to HH:MM
                 pressed = True
                 if not numbers and results:
@@ -347,7 +348,6 @@ while True:
                     add(hms(float(numbers)))
                     numbers = ""
                 display()
-                sleep(0.1)
             if keydown(KEY_IMAGINARY): # D: radians to degrees
                 pressed = True
                 if not numbers and results:
@@ -356,7 +356,6 @@ while True:
                     add(degrees(float(numbers)))
                     numbers = ""
                 display()
-                sleep(0.1)
             if keydown(KEY_FOUR): # R: degrees to radians
                 pressed = True
                 if not numbers and results:
@@ -365,7 +364,6 @@ while True:
                     add(radians(float(numbers)))
                     numbers = ""
                 display()
-                sleep(0.1)
             if keydown(KEY_LOG): # C: Fahrenheit to Celsius
                 pressed = True
                 if not numbers and results:
@@ -374,7 +372,6 @@ while True:
                     add((float(numbers) - 32) * 5/9)
                     numbers = ""
                 display()
-                sleep(0.1)
             if keydown(KEY_POWER): # F: Celsius to Fahrenheit
                 pressed = True
                 if not numbers and results:
@@ -383,7 +380,6 @@ while True:
                     add(float(numbers) * 9/5 + 32)
                     numbers = ""
                 display()
-                sleep(0.1)
             if keydown(KEY_LEFTPARENTHESIS): # P: Prime factorisation
                 pressed = True
                 if not numbers and results:
@@ -393,11 +389,15 @@ while True:
                     add(prime_facto(float(numbers)))
                     numbers = ""
                 display()
-                sleep(0.1)
-
+            if keydown(KEY_ZERO): # ?: Random number in [0;1[
+                pressed = True
+                if not numbers:
+                    add(random())
+                display()
+              
     # Hotkeys / Help
     elif keydown(KEY_TOOLBOX):
         toolbox()
 
     # Idle timeout before next inf. loop
-    sleep(0.175)
+    sleep(0.1)
