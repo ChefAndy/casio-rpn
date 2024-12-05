@@ -6,7 +6,7 @@ from time import *
 
 # GUI: refreshes whole screen
 def display():
-    mem = 8
+    mem = 9
     # STACK: limits to mem-1 items + input
     n = len(results)
     if n > mem-1:
@@ -15,19 +15,20 @@ def display():
     h = 222//mem
     # GUI: line backgrounds
     fill_rect(0,0, 320,222, color(255,254,255))
-    if n >= 2:
-        fill_rect(0,5*h, 320,h, color(245,250,255))
-    if n >= 4:
-        fill_rect(0,3*h, 320,h, color(245,250,255))
-    if n >= 6:
-        fill_rect(0,1*h, 320,h, color(245,250,255))
+    fill_rect(0,1*h, 320,h, color(245,250,255))
+    fill_rect(0,3*h, 320,h, color(245,250,255))
+    fill_rect(0,5*h, 320,h, color(245,250,255))
+    fill_rect(0,7*h, 320,h, color(245,250,255))
+    #  GUI: displays stack lines numbers
+    for line in range(mem):
+        draw_string(str(line+1)+":", 10, h*(mem-2-line)+3)
     #  GUI: displays stack items
     for line in range(n):
-        draw_string(str(results[line]), 10, h*(mem-2-line)+5)
+        draw_string(str(results[line]), 310-10*len(str(results[line])), h*(mem-2-line)+3)
     # GUI: input field separation line
     fill_rect(0,(mem-1)*h, 320,1, color(223,217,222))
     # GUI: input field contents
-    draw_string(numbers, 6,197)
+    draw_string(numbers, 6,199)
     sleep(0.2)
 
 # Removing something from the stack
@@ -71,11 +72,11 @@ def toolbox():
     draw_string("D: rad → deg     i : 1/x", 35,80)
     draw_string("R: deg → rad     , :  ±", 35,100)
     fill_rect(28,124, 264,1, color(238,238,238))
-    draw_string("C: °F → °C       ( : ROT", 35,130)
+    draw_string("C: °F → °C       ( : ROLL", 35,130)
     draw_string("F: °C → °F       ) : SWAP", 35,150)
     fill_rect(28,174, 264,1, color(238,238,238))
     draw_string("P: prime fact.", 35,180)
-    draw_string("?: random       EXE: DUP", 35,200)
+    draw_string("?: random", 35,200)
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
         None
