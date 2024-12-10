@@ -169,7 +169,13 @@ while True:
         entry += "9"
         display()
     elif keydown(KEY_DOT):
-        entry += "."
+        if not entry:
+            entry = "0."
+        else:
+            entry += "."
+        display()
+    elif keydown(KEY_EE):
+        entry += "e"
         display()
     elif keydown(KEY_PI) and not entry:
         push(pi)
@@ -285,8 +291,6 @@ while True:
         evaluate2(lambda x,y: x/y)
     elif keydown(KEY_POWER):
         evaluate2(lambda x,y: x**y)
-    elif keydown(KEY_EE):
-        evaluate2(lambda x,y: x * 10**y)
 
     # ALPHA operators
     elif keydown(KEY_ALPHA):
