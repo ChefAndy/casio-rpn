@@ -48,26 +48,29 @@ def display():
     draw_string(entry, 10, levels*h + shift + shift%8)
     sleep(0.2)
 
+# Python-specific: keep integers and not floats if possible
+def python_int(foo):
+    foo = float(foo)
+    if foo == int(foo):
+        foo = int(foo)
+    return foo
+
 # Dropping something from the stack
 def drop():
     stack.pop(0)
-    # L-level keeps its value on fixed stack
+    # On fixed stack: L-level keeps its value
     if fixed:
         stack.append(stack[3])
 
 # Pushing something to the stack
 def push(foo):
-    if float(foo) == int(foo):
-        foo = int(foo)
-    else:
-        foo = float(foo)
-    stack.insert(0, foo)
+    stack.insert(0, python_int(foo))
 
 # Unary operations
 def evaluate1(operation):
     global entry, stack
     if not entry and stack:
-        stack[0] = operation(stack[0])
+        stack[0] = python_int(operation(stack[0]))
     elif entry:
         push(operation(float(entry)))
         entry = ""
@@ -77,10 +80,10 @@ def evaluate1(operation):
 def evaluate2(operation):
     global entry, stack
     if not entry and len(stack)>=2:
-        stack[1] = operation(stack[1], stack[0])
+        stack[1] = python_int(operation(stack[1], stack[0]))
         drop()
     elif entry and stack:
-        stack[0] = operation(stack[0], float(entry))
+        stack[0] = python_int(operation(stack[0], float(entry)))
         entry = ""
     display()
 
@@ -108,7 +111,7 @@ def toolbox():
     # Contents
     fill_rect(27,48, 266,174, color(238,238,238))
     fill_rect(28,49, 264,173, color(255,254,255))
-    draw_string("H: dec → h:min", 35,52)
+    draw_string("xnt: fixed/dynamic stack", 35,52)
     fill_rect(28,74, 264,1, color(238,238,238))
     draw_string("D: rad → deg     i : 1/x", 35,80)
     draw_string("R: deg → rad     , :  ±", 35,100)
@@ -116,8 +119,8 @@ def toolbox():
     draw_string("C: °F → °C       ( : ROLL", 35,130)
     draw_string("F: °C → °F       ) : SWAP", 35,150)
     fill_rect(28,174, 264,1, color(238,238,238))
-    draw_string("P: prime fact.   ? : rand", 35,180)
-    draw_string("xnt: fixed/dynamic stack", 35,200)
+    draw_string("H: dec → h:min   ? : rand", 35,180)
+    draw_string("P: prime fact.", 35,200)
     # Closing the Hotkeys toolbox
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
@@ -224,12 +227,9 @@ while True:
         # Inputs e
         if not entry and not stack:
             push(exp(1))
-        elif not entry and stack:
-            stack[0] = exp(stack[0])
-        elif entry:
-            push(exp(float(entry)))
-            entry = ""
-        display()
+            display()
+        else:
+            evaluate1(lambda x: exp(x))
     elif keydown(KEY_LN):
         evaluate1(lambda x: log(x))
     elif keydown(KEY_LOG):
