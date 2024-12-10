@@ -63,6 +63,27 @@ def push(foo):
         foo = float(foo)
     stack.insert(0, foo)
 
+# Unary operations
+def evaluate1(operation):
+    global entry, stack
+    if not entry and stack:
+        stack[0] = operation(stack[0])
+    elif entry:
+        push(operation(float(entry)))
+        entry = ""
+    display()
+
+# Binary operations
+def evaluate2(operation):
+    global entry, stack
+    if not entry and len(stack)>=2:
+        stack[1] = operation(stack[1], stack[0])
+        drop()
+    elif entry and stack:
+        stack[0] = operation(stack[0], float(entry))
+        entry = ""
+    display()
+
 # Converting decimal to sexagesimal
 def hms(dec):
     hours = int(dec)
@@ -105,9 +126,9 @@ def toolbox():
 
 ################################################
 
-# Original state: fixed stack, empty entry field
-fixed = True
-stack = [0, 0, 0, 0, 0]
+# Original state: dynamic stack, empty entry field
+fixed = False
+stack = []
 entry = ""
 
 # Key pressed?
@@ -210,40 +231,19 @@ while True:
             entry = ""
         display()
     elif keydown(KEY_LN):
-        if not entry and stack:
-            stack[0] = log(stack[0])
-        elif entry:
-            push(log(float(entry)))
-            entry = ""
-        display()
+        evaluate1(lambda x: log(x))
     elif keydown(KEY_LOG):
-        if not entry and stack:
-            stack[0] = log10(stack[0])
-        elif entry:
-            push(log10(float(entry)))
-            entry = ""
-        display()
+        evaluate1(lambda x: log10(x))
     elif keydown(KEY_SINE):
-        if not entry and stack:
-            stack[0] = sin(stack[0])
-        elif entry:
-            push(sin(float(entry)))
-            entry = ""
-        display()
+        evaluate1(lambda x: sin(x))
     elif keydown(KEY_COSINE):
-        if not entry and stack:
-            stack[0] = cos(stack[0])
-        elif entry:
-            push(cos(float(entry)))
-            entry = ""
-        display()
+        evaluate1(lambda x: cos(x))
     elif keydown(KEY_TANGENT):
-        if not entry and stack:
-            stack[0] = tan(stack[0])
-        elif entry:
-            push(tan(float(entry)))
-            entry = ""
-        display()
+        evaluate1(lambda x: tan(x))
+    elif keydown(KEY_SQRT):
+        evaluate1(lambda x: sqrt(x))
+    elif keydown(KEY_SQUARE):
+        evaluate1(lambda x: x*x)
 
     # SHIFT: reciprocal trig, CLEAR
     elif keydown(KEY_SHIFT):
@@ -251,118 +251,42 @@ while True:
         draw_string("shift",270,0)
         while not pressed:
             if keydown(KEY_SINE):
+                evaluate1(lambda x: asin(x))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = asin(stack[0])
-                elif entry:
-                    push(asin(float(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_COSINE):
+                evaluate1(lambda x: acos(x))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = acos(stack[0])
-                elif entry:
-                    push(acos(float(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_TANGENT):
+                evaluate1(lambda x: atan(x))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = atan(stack[0])
-                elif entry:
-                    push(atan(float(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_BACKSPACE): # CLEAR
-                pressed = True
                 if fixed:
                     stack = [0, 0, 0, 0, 0]
                 else:
                     stack = []
                 entry = ""
+                pressed = True
                 display()
-
-    elif keydown(KEY_SQRT):
-        if not entry and stack:
-            stack[0] = sqrt(stack[0])
-        elif entry:
-            push(sqrt(float(entry)))
-            entry = ""
-        display()
-    elif keydown(KEY_SQUARE):
-        if not entry and stack:
-            stack[0] = stack[0]**2
-        elif entry:
-            push(float(entry)**2)
-            entry = ""
-        display()
 
     # Not labeled unary operators
     elif keydown(KEY_IMAGINARY):
-        if not entry and stack:
-            stack[0] = 1/stack[0]
-        elif entry:
-            push(1/float(entry))
-            entry = ""
-        display()
+        evaluate1(lambda x: 1/x)
     elif keydown(KEY_COMMA):
-        if not entry and stack:
-            stack[0] = -stack[0]
-        elif entry:
-            push(-float(entry))
-            entry = ""
-        display()
+        evaluate1(lambda x: -x)
 
     # Binary operators
     elif keydown(KEY_PLUS):
-        if not entry and len(stack)>=2:
-            stack[1] += stack[0]
-            drop()
-        elif entry and stack:
-            stack[0] += float(entry)
-            entry = ""
-        display()
+        evaluate2(lambda x,y: x+y)
     elif keydown(KEY_MINUS):
-        if not entry and len(stack)>=2:
-            stack[1] -= stack[0]
-            drop()
-        elif entry and stack:
-            stack[0] -= float(entry)
-            entry = ""
-        display()
+        evaluate2(lambda x,y: x-y)
     elif keydown(KEY_MULTIPLICATION):
-        if not entry and len(stack)>=2:
-            stack[1] = stack[1]*stack[0]
-            drop()
-        elif entry and stack:
-            stack[0] = stack[0]*float(entry)
-            entry = ""
-        display()
+        evaluate2(lambda x,y: x*y)
     elif keydown(KEY_DIVISION):
-        if not entry and len(stack)>=2:
-            stack[1] = stack[1]/stack[0]
-            drop()
-        elif entry and stack:
-            stack[0] = stack[0]/float(entry)
-            entry = ""
-        display()
+        evaluate2(lambda x,y: x/y)
     elif keydown(KEY_POWER):
-        if not entry and len(stack)>=2:
-            stack[1] = stack[1] ** stack[0]
-            drop()
-        elif entry and stack:
-            stack[0] = stack[0] ** float(entry)
-            entry = ""
-        display()
+        evaluate2(lambda x,y: x**y)
     elif keydown(KEY_EE):
-        if not entry and len(stack)>=2:
-            stack[1] = stack[1] * 10**stack[0]
-            drop()
-        elif entry and stack:
-            stack[0] = stack[0] * 10**float(entry)
-            entry = ""
-        display()
+        evaluate2(lambda x,y: x * 10**y)
 
     # ALPHA operators
     elif keydown(KEY_ALPHA):
@@ -370,66 +294,36 @@ while True:
         draw_string("alpha",270,0)
         while not pressed:
             if keydown(KEY_DOT): # !: factorial
+                evaluate1(lambda x: factorial(int(x)))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = factorial(int(stack[0]))
-                elif entry:
-                    push(factorial(int(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_COSINE): # H: dec to HH:MM
+                evaluate1(lambda x: hms(x))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = hms(stack[0])
-                elif entry:
-                    push(hms(float(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_IMAGINARY): # D: radians to degrees
+                evaluate1(lambda x: degrees(x))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = degrees(stack[0])
-                elif entry:
-                    push(degrees(float(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_FOUR): # R: degrees to radians
+                evaluate1(lambda x: radians(x))
                 pressed = True
-                if not entry and stack:
-                    stack[0] = radians(stack[0])
-                elif entry:
-                    push(radians(float(entry)))
-                    entry = ""
-                display()
             if keydown(KEY_LOG): # C: Fahrenheit to Celsius
+                evaluate1(lambda x: (x-32) * 5/9)
                 pressed = True
-                if not entry and stack:
-                    stack[0] = (stack[0] - 32) * 5/9
-                elif entry:
-                    push((float(entry) - 32) * 5/9)
-                    entry = ""
-                display()
             if keydown(KEY_POWER): # F: Celsius to Fahrenheit
+                evaluate1(lambda x: x * 9/5 + 32)
                 pressed = True
-                if not entry and stack:
-                    stack[0] = stack[0] * 9/5 + 32
-                elif entry:
-                    push(float(entry) * 9/5 + 32)
-                    entry = ""
-                display()
             if keydown(KEY_LEFTPARENTHESIS): # P: Prime factorisation
-                pressed = True
                 if not entry and stack:
-                    push(prime_facto(stack[0]))
+                    push(prime_facto(int(stack[0])))
                 elif entry:
-                    push(entry)
-                    push(prime_facto(entry))
+                    push(int(entry))
+                    push(prime_facto(int(entry)))
                     entry = ""
+                pressed = True
                 display()
             if keydown(KEY_ZERO): # ?: Random number in [0;1[
-                pressed = True
                 if not entry:
                     push(random())
+                pressed = True
                 display()
               
     # Hotkeys / Help
