@@ -8,7 +8,7 @@ from time import *
 def display():
     # STACK: number of levels displayed
     if fixed:
-        levels = 5
+        levels = 4
     else:
         levels = 8
     # Fixed stack: drops oldest level if not displayable
@@ -29,11 +29,11 @@ def display():
         fill_rect(0,7*h, 320,h, color(245,250,255))  
     # GUI: displays stack level names
     if fixed:
-        shift = 9
+        shift = 13
     else:
         shift = 3
     if fixed:
-        name = ["X:", "Y:", "Z:", "T:", "L:"]
+        name = ["X:", "Y:", "Z:", "T:"]
         for line in range(levels):
             draw_string(name[line], 10, h*(levels-1-line) + shift)
     else:
@@ -45,7 +45,7 @@ def display():
     # GUI: entry field separation line
     fill_rect(0,levels*h, 320,1, color(223,217,222))
     # GUI: entry field contents
-    draw_string(entry, 10, levels*h + shift + shift%8)
+    draw_string(entry, 10, levels*h + shift + shift%9)
     sleep(0.2)
 
 # Python-specific: keep integers and not floats if possible
@@ -58,9 +58,9 @@ def python_int(foo):
 # Dropping something from the stack
 def drop():
     stack.pop(0)
-    # On fixed stack: L-level keeps its value
+    # On fixed stack: T-level keeps its value
     if fixed:
-        stack.append(stack[3])
+        stack.append(stack[2])
 
 # Pushing something to the stack
 def push(foo):
@@ -185,7 +185,7 @@ while True:
     elif keydown(KEY_XNT): # Fixed or dynamic stack
         fixed = not fixed
         if fixed: # All levels should be 0 if not used
-            for level in range(5 - len(stack)):
+            for level in range(4 - len(stack)):
                 stack.append(0)
         else: # All levels should be empty if not used
             while stack[len(stack) - 1] == 0:
@@ -278,7 +278,7 @@ while True:
                 display()
             if keydown(KEY_BACKSPACE): # CLEAR
                 if fixed:
-                    stack = [0, 0, 0, 0, 0]
+                    stack = [0, 0, 0, 0]
                 else:
                     stack = []
                 entry = ""
