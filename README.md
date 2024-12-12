@@ -17,7 +17,7 @@ A remark for the [(] key, which emulates [R↓] of HP calculators:
 ### Two RPN stack variants
 On [x,n,t] key, the user may choose between two RPN variants:
 - either dynamic levels 1,2,3,… with infinite amount of inputs (default)
-- either X,Y,Z,T,L levels with dropping of oldest inputs, and L keeping the last value
+- either X,Y,Z,T levels with dropping of oldest inputs, and T keeping its value
 
 ### Test it & get it now
 On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
