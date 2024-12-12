@@ -113,13 +113,13 @@ def toolbox():
     fill_rect(28,49, 264,173, color(255,254,255))
     draw_string("xnt: fixed/dynamic stack", 35,52)
     fill_rect(28,74, 264,1, color(238,238,238))
-    draw_string("D: rad → deg     i : 1/x", 35,80)
-    draw_string("R: deg → rad     , :  ±", 35,100)
+    draw_string("D: rad → deg     i: 1/x", 35,80)
+    draw_string("R: deg → rad     ,:  ±", 35,100)
     fill_rect(28,124, 264,1, color(238,238,238))
-    draw_string("C: °F → °C       ( : ROLL", 35,130)
-    draw_string("F: °C → °F       ) : SWAP", 35,150)
+    draw_string("C: °F → °C       (: nROLL", 35,130)
+    draw_string("F: °C → °F       ): SWAP", 35,150)
     fill_rect(28,174, 264,1, color(238,238,238))
-    draw_string("H: dec → h:min   ? : rand", 35,180)
+    draw_string("H: dec → h:min   ?: rand", 35,180)
     draw_string("P: prime fact.", 35,200)
     # Closing the Hotkeys toolbox
     sleep(0.5)
@@ -202,13 +202,14 @@ while True:
             dup = stack[0]
             push(dup)
         display()
-    elif keydown(KEY_LEFTPARENTHESIS): # ROLL
+    elif keydown(KEY_LEFTPARENTHESIS): # (n) ROLL down
         if entry:
-            push(entry)
+            pos = float(entry)
             entry = ""
-        if len(stack) >= 2:
-            stack.append(stack[0])
-            stack.pop(0)
+            if pos == int(pos) and int(pos) <= len(stack):
+                stack.insert(int(pos-1), stack.pop(0))
+        elif len(stack) >= 2:
+            stack.append(stack.pop(0))
         display()
     elif keydown(KEY_RIGHTPARENTHESIS): # SWAP
         if entry:
@@ -251,7 +252,7 @@ while True:
     elif keydown(KEY_SQUARE):
         evaluate1(lambda x: x*x)
 
-    # SHIFT: reciprocal trig, CLEAR
+    # SHIFT: reciprocal trig, ROLL up, CLEAR
     elif keydown(KEY_SHIFT):
         pressed = False
         draw_string("shift",270,0)
@@ -265,6 +266,16 @@ while True:
             if keydown(KEY_TANGENT):
                 evaluate1(lambda x: atan(x))
                 pressed = True
+            if keydown(KEY_LEFTPARENTHESIS): # ROLL up
+                if entry:
+                    pos = float(entry)
+                    entry = ""
+                    if pos == int(pos) and int(pos) <= len(stack):
+                        stack.insert(0, stack.pop(int(pos)-1))
+                elif len(stack) >= 2:
+                    stack.insert(0, stack.pop())
+                pressed = True
+                display()
             if keydown(KEY_BACKSPACE): # CLEAR
                 if fixed:
                     stack = [0, 0, 0, 0, 0]
