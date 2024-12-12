@@ -2,12 +2,17 @@
 
 Python script for the scientific Numworks calculator, enabling to type in RPN in a graphical user interface.
 
-### A few keys
-The basic operations are mapped to the usual buttons.
+### Keystrokes
+- Basic operations are mapped to the usual buttons.
+- [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
 
-The [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
+![canvas](https://github.com/user-attachments/assets/8fee3a04-c9ed-4026-9050-e00fa4f0d427)
 
-![canvas](https://github.com/user-attachments/assets/a70bac27-a74f-4a62-a662-8d5162ed5462)
+A remark for the [(] key, which emulates [R↓] of HP calculators:
+
+- used as-is, rotates the stack downwards
+- with shift, rotates the stack upwards
+- if an natural number `n` is on the command line, rotates only the first `n` stack levels
 
 ### Two RPN stack variants
 On [x,n,t] key, the user may choose between two RPN variants:
@@ -23,7 +28,6 @@ Here are a few ideas for improvements:
 
 **Features**
 - % of a quantity
-- (n) ROLL up/down
 - [Ans] maps for a LastX function
 - [S] for stats (mean, median, quartiles, standard deviation, …)
 - store to memories
