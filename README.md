@@ -30,7 +30,9 @@ Here are a few ideas for improvements:
 - % of a quantity
 - [Ans] maps for a LastX function
 - [S] for stats (mean, median, quartiles, standard deviation, …)
+- [var] for a dedicated Conversions menu
 - store to memories
+- interactive “clickable” menus
 
 **Bugs**
 - shift & alpha should be deactivable
