@@ -27,7 +27,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Features**
-- % of a quantity
 - [Ans] maps for a LastX function
 - [S] for stats (mean, median, quartiles, standard deviation, …)
 - [var] for a dedicated Conversions menu
