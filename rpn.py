@@ -311,6 +311,9 @@ while True:
             if keydown(KEY_DOT): # !: factorial
                 evaluate1(lambda x: factorial(int(x)))
                 pressed = True
+            if keydown(KEY_BACKSPACE): # %: proportion of ...
+                evaluate2(lambda x,y: x*y / 100)
+                pressed = True
             if keydown(KEY_COSINE): # H: dec to HH:MM
                 evaluate1(lambda x: hms(x))
                 pressed = True
