@@ -125,8 +125,8 @@ def toolbox():
     draw_string("C: °F → °C       (: nROLL", 35,130)
     draw_string("F: °C → °F       ): SWAP", 35,150)
     fill_rect(28,174, 264,1, color(238,238,238))
-    draw_string("H: dec → h:min   ?: rand", 35,180)
-    draw_string("P: prime fact.", 35,200)
+    draw_string("H: dec→h:min   Ans: LastX", 35,180)
+    draw_string("P: prime fact.   ?: rand", 35,200)
     # Closing the Hotkeys toolbox
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
