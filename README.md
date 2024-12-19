@@ -28,11 +28,14 @@ Here are a few ideas for improvements:
 
 **Features**
 - [Ans] maps for a LastX function
+- add a narrow no-break space every 3 digits from right
+- display large numbers as approximations instead of overflowing to the left
 - [S] for stats (mean, median, quartiles, standard deviation, …)
 - [var] for a dedicated Conversions menu
 - store to memories
 - interactive “clickable” menus
 
 **Bugs**
+- fix text background on odd/even lines
 - shift & alpha should be deactivable
 - handle operation errors (div by 0 and such)
