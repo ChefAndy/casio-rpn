@@ -4,7 +4,7 @@ Python script for the scientific Numworks calculator, enabling to type in RPN in
 
 ### Keystrokes
 - Basic operations are mapped to the usual buttons.
-- [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
+- [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as LastX, ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
 
 ![canvas](https://github.com/user-attachments/assets/8fee3a04-c9ed-4026-9050-e00fa4f0d427)
 
@@ -27,7 +27,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Features**
-- [Ans] maps for a LastX function
 - add a narrow no-break space every 3 digits from right
 - display large numbers as approximations instead of overflowing to the left
 - [S] for stats (mean, median, quartiles, standard deviation, …)
