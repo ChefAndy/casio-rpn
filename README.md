@@ -28,9 +28,10 @@ Here are a few ideas for improvements:
 
 **Features**
 - add a narrow no-break space every 3 digits from right
-- display large numbers as approximations instead of overflowing to the left
-- [S] for stats (mean, median, quartiles, standard deviation, …)
 - [var] for a dedicated Conversions menu
+- Study the possibility of *setting* angles to degrees/radians instead of *converting*
+- [S] for stats (mean, median, quartiles, standard deviation, …)
+- display large numbers as approximations instead of overflowing to the left
 - store to memories
 - interactive “clickable” menus
 
