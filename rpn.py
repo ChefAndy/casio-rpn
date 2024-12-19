@@ -64,25 +64,31 @@ def drop():
 
 # Pushing something to the stack
 def push(foo):
+    global lastx
+    lastx = foo
     stack.insert(0, python_int(foo))
 
 # Unary operations
 def evaluate1(operation):
-    global entry, stack
+    global entry, stack, lastx
     if not entry and stack:
+        lastx = stack[0]
         stack[0] = python_int(operation(stack[0]))
     elif entry:
-        push(operation(float(entry)))
+        lastx = entry
+        stack.insert(0,python_int(operation(float(entry))))
         entry = ""
     display()
 
 # Binary operations
 def evaluate2(operation):
-    global entry, stack
+    global entry, stack, lastx
     if not entry and len(stack)>=2:
+        lastx = stack[0]
         stack[1] = python_int(operation(stack[1], stack[0]))
         drop()
     elif entry and stack:
+        lastx = entry
         stack[0] = python_int(operation(stack[0], float(entry)))
         entry = ""
     display()
@@ -133,6 +139,7 @@ def toolbox():
 fixed = False
 stack = []
 entry = ""
+lastx = ""
 
 # Key pressed?
 display()
@@ -193,6 +200,11 @@ while True:
                 if stack == [0]:
                     stack = []
                     break
+        display()
+    elif keydown(KEY_ANS): # LastX
+        if entry:
+            stack.insert(0, python_int(entry))
+        push(lastx)
         display()
     elif keydown(KEY_EXE): # ENTER, DUP
         if entry:
