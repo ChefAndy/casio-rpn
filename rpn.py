@@ -35,13 +35,13 @@ def display():
     if fixed:
         name = ["X:", "Y:", "Z:", "T:"]
         for line in range(levels):
-            draw_string(name[line], 10, h*(levels-1-line) + shift)
+            draw_string(name[line], 10, h*(levels-1-line) + shift, (0,0,0), (245+10*(line%2),250+4*(line%2),255))
     else:
         for line in range(min(levels, len(stack))):
-            draw_string(str(line+1)+":", 10, h*(levels-1-line) + shift)
+            draw_string(str(line+1)+":", 10, h*(levels-1-line) + shift, (0,0,0), (245+10*(line%2),250+4*(line%2),255))
     # GUI: displays stack levels contents
     for line in range(len(stack)):
-        draw_string(str(stack[line]), 310 - 10*len(str(stack[line])), h*(levels-1-line) + shift)
+        draw_string(str(stack[line]), 310 - 10*len(str(stack[line])), h*(levels-1-line) + shift, (0,0,0), (245+10*(line%2),250+4*(line%2),255))
     # GUI: entry field separation line
     fill_rect(0,levels*h, 320,1, color(223,217,222))
     # GUI: entry field contents
@@ -361,4 +361,4 @@ while True:
         toolbox()
 
     # Idle timeout before next inf. loop
-    sleep(0.1)
+    sleep(0.08)
