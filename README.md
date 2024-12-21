@@ -36,6 +36,5 @@ Here are a few ideas for improvements:
 - interactive “clickable” menus
 
 **Bugs**
-- fix text background on odd/even lines
 - shift & alpha should be deactivable
 - handle operation errors (div by 0 and such)
