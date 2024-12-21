@@ -32,6 +32,7 @@ Here are a few ideas for improvements:
 - Study the possibility of *setting* angles to degrees/radians instead of *converting*
 - [S] for stats (mean, median, quartiles, standard deviation, …)
 - display large numbers as approximations instead of overflowing to the left
+- switch between fixed number of d.p., scientific notation, and so on
 - store to memories
 - interactive “clickable” menus
 
