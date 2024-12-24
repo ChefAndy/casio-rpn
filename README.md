@@ -29,12 +29,14 @@ Here are a few ideas for improvements:
 **Features**
 - add a narrow no-break space every 3 digits from right
 - [var] for a dedicated Conversions menu
+- OVER function (mapped to shift+[exe]?)
 - Study the possibility of *setting* angles to degrees/radians instead of *converting*
 - [S] for stats (mean, median, quartiles, standard deviation, …)
 - display large numbers as approximations instead of overflowing to the left
 - switch between fixed number of d.p., scientific notation, and so on
 - store to memories
 - interactive “clickable” menus
+- [up]/[down] arrows and PICK or DROP
 
 **Bugs**
 - shift & alpha should be deactivable
