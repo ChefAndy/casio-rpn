@@ -136,12 +136,13 @@ def toolbox():
 ################################################
 
 # Original state: dynamic stack, empty entry field
+
 fixed = False
 stack = []
 entry = ""
 lastx = ""
 
-# Key pressed?
+
 display()
 while True:
     # Type in entry
@@ -189,7 +190,8 @@ while True:
         display()
     
     # RPN-specific
-    elif keydown(KEY_XNT): # Fixed or dynamic stack
+
+    elif keydown(KEY_XNT):  # Fixed or dynamic stack
         fixed = not fixed
         if fixed: # All levels should be 0 if not used
             for level in range(4 - len(stack)):
@@ -201,12 +203,12 @@ while True:
                     stack = []
                     break
         display()
-    elif keydown(KEY_ANS): # LastX
+    elif keydown(KEY_ANS):  # LastX
         if entry:
             stack.insert(0, python_int(entry))
         push(lastx)
         display()
-    elif keydown(KEY_EXE): # ENTER, DUP
+    elif keydown(KEY_EXE):  # ENTER, DUP
         if entry:
             push(entry)
             entry = ""
@@ -214,7 +216,7 @@ while True:
             dup = stack[0]
             push(dup)
         display()
-    elif keydown(KEY_LEFTPARENTHESIS): # (n) ROLL down
+    elif keydown(KEY_LEFTPARENTHESIS):  # (n) ROLL down
         if entry:
             pos = float(entry)
             entry = ""
@@ -223,7 +225,7 @@ while True:
         elif len(stack) >= 2:
             stack.append(stack.pop(0))
         display()
-    elif keydown(KEY_RIGHTPARENTHESIS): # SWAP
+    elif keydown(KEY_RIGHTPARENTHESIS):  # SWAP
         if entry:
             push(entry)
             entry = ""
@@ -233,8 +235,7 @@ while True:
             stack[1] = swap
         display()
 
-    # Drops stack top or deletes cipher
-    elif keydown(KEY_BACKSPACE):
+    elif keydown(KEY_BACKSPACE):  # Drops stack top or deletes cipher
         if not entry and stack:
             drop()
         else:
@@ -242,8 +243,9 @@ while True:
         display()
 
     # Unary operators
+
     elif keydown(KEY_EXP):
-        # Inputs e
+        # If no value: inputs e instead
         if not entry and not stack:
             push(exp(1))
             display()
@@ -265,6 +267,7 @@ while True:
         evaluate1(lambda x: x*x)
 
     # SHIFT: reciprocal trig, ROLL up, CLEAR
+
     elif keydown(KEY_SHIFT):
         pressed = False
         draw_string("shift",270,0)
@@ -298,12 +301,14 @@ while True:
                 display()
 
     # Not labeled unary operators
+
     elif keydown(KEY_IMAGINARY):
         evaluate1(lambda x: 1/x)
     elif keydown(KEY_COMMA):
         evaluate1(lambda x: -x)
 
     # Binary operators
+
     elif keydown(KEY_PLUS):
         evaluate2(lambda x,y: x+y)
     elif keydown(KEY_MINUS):
@@ -316,32 +321,33 @@ while True:
         evaluate2(lambda x,y: x**y)
 
     # ALPHA operators
+
     elif keydown(KEY_ALPHA):
         pressed = False
         draw_string("alpha",270,0)
         while not pressed:
-            if keydown(KEY_DOT): # !: factorial
+            if keydown(KEY_DOT):  # !: factorial
                 evaluate1(lambda x: factorial(int(x)))
                 pressed = True
-            if keydown(KEY_BACKSPACE): # %: proportion of ...
+            if keydown(KEY_BACKSPACE):  # %: proportion of
                 evaluate2(lambda x,y: x*y / 100)
                 pressed = True
-            if keydown(KEY_COSINE): # H: dec to HH:MM
+            if keydown(KEY_COSINE):  # H: dec to HH:MM
                 evaluate1(lambda x: hms(x))
                 pressed = True
-            if keydown(KEY_IMAGINARY): # D: radians to degrees
+            if keydown(KEY_IMAGINARY):  # D: radians to degrees
                 evaluate1(lambda x: degrees(x))
                 pressed = True
-            if keydown(KEY_FOUR): # R: degrees to radians
+            if keydown(KEY_FOUR):  # R: degrees to radians
                 evaluate1(lambda x: radians(x))
                 pressed = True
-            if keydown(KEY_LOG): # C: Fahrenheit to Celsius
+            if keydown(KEY_LOG):  # C: Fahrenheit to Celsius
                 evaluate1(lambda x: (x-32) * 5/9)
                 pressed = True
-            if keydown(KEY_POWER): # F: Celsius to Fahrenheit
+            if keydown(KEY_POWER):  # F: Celsius to Fahrenheit
                 evaluate1(lambda x: x * 9/5 + 32)
                 pressed = True
-            if keydown(KEY_LEFTPARENTHESIS): # P: Prime factorisation
+            if keydown(KEY_LEFTPARENTHESIS):  # P: Prime factorisation
                 if not entry and stack:
                     push(prime_facto(int(stack[0])))
                 elif entry:
@@ -350,15 +356,17 @@ while True:
                     entry = ""
                 pressed = True
                 display()
-            if keydown(KEY_ZERO): # ?: Random number in [0;1[
+            if keydown(KEY_ZERO):  # ?: Random number in [0;1[
                 if not entry:
                     push(random())
                 pressed = True
                 display()
               
     # Hotkeys / Help
+
     elif keydown(KEY_TOOLBOX):
         toolbox()
 
     # Idle timeout before next inf. loop
+
     sleep(0.08)
