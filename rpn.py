@@ -111,9 +111,9 @@ def prime_facto(n):
 # Hotkeys recap toolbox
 def toolbox():
     # Title
-    fill_rect(27,26, 266,22, color(65,64,65))
-    fill_rect(28,27, 264,20, color(106,101,115))
-    draw_string(" HOTKEYS ", 115,28)
+    fill_rect(27,27, 266,21, color(65,64,65))
+    fill_rect(28,28, 264,19, color(108,99,115))
+    draw_string("Hotkeys", 125,28, (255,254,255), (108,99,115))
     # Contents
     fill_rect(27,48, 266,174, color(238,238,238))
     fill_rect(28,49, 264,173, color(255,254,255))
