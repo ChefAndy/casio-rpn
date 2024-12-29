@@ -16,17 +16,17 @@ def display():
         stack.pop()
     # GUI: height (pixels) of lines displayed (stack + entry)
     h = 222 // (levels+1)
-    # GUI: white background
-    fill_rect(0,0, 320,222, color(255,254,255))
+    # GUI: blank background
+    fill_rect(0,0, 320,222, color(245,250,255))
     # GUI: odd/even line backgrounds
-    if fixed or (not fixed and len(stack)>=7):
-        fill_rect(0,1*h, 320,h, color(245,250,255))
-    if fixed or (not fixed and len(stack)>=5):
-        fill_rect(0,3*h, 320,h, color(245,250,255))
-    if not fixed and len(stack) >= 3:
-        fill_rect(0,5*h, 320,h, color(245,250,255))
-    if not fixed and len(stack) >= 1:
-        fill_rect(0,7*h, 320,h, color(245,250,255))  
+    if fixed or len(stack)>=8:
+        fill_rect(0,0, 320,h, color(255,254,255))
+    if fixed or len(stack)>=6:
+        fill_rect(0,2*h, 320,h, color(255,254,255))
+    if not fixed and len(stack) >= 4:
+        fill_rect(0,4*h, 320,h, color(255,254,255))
+    if not fixed and len(stack) >= 2:
+        fill_rect(0,6*h, 320,h, color(255,254,255))  
     # GUI: displays stack level names
     if fixed:
         shift = 13
@@ -42,10 +42,10 @@ def display():
     # GUI: displays stack levels contents
     for line in range(len(stack)):
         draw_string(str(stack[line]), 310 - 10*len(str(stack[line])), h*(levels-1-line) + shift, (0,0,0), (245+10*(line%2),250+4*(line%2),255))
-    # GUI: entry field separation line
-    fill_rect(0,levels*h, 320,1, color(223,217,222))
-    # GUI: entry field contents
-    draw_string(entry, 10, levels*h + shift + shift%9)
+    # GUI: entry field
+    fill_rect(0,levels*h, 320,1, color(223,217,222))  # Separation line
+    fill_rect(0,levels*h+1, 320,222-(levels-1)*h, color(255,254,255))  # Contents
+    draw_string(entry, 10, levels*h + shift + shift%9, (0,0,0), (255,254,255))
     sleep(0.2)
 
 # Python-specific: keep integers and not floats if possible
