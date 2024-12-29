@@ -193,10 +193,12 @@ while True:
 
     elif keydown(KEY_XNT):  # Fixed or dynamic stack
         fixed = not fixed
-        if fixed: # All levels should be 0 if not used
+        if fixed:  # Max 4 levels, equal to 0 if not used
+            for level in range(4, len(stack)):
+                stack.pop()
             for level in range(4 - len(stack)):
                 stack.append(0)
-        else: # All levels should be empty if not used
+        else:  # All levels should be empty if not used
             while stack[len(stack) - 1] == 0:
                 stack.pop()
                 if stack == [0]:
