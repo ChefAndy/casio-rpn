@@ -6,7 +6,7 @@ Python script for the scientific Numworks calculator, enabling to type in RPN in
 - Basic operations are mapped to the usual buttons.
 - [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as LastX, ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
 
-![canvas](https://github.com/user-attachments/assets/373930fb-d84a-4949-81f1-c39001a9ecab)
+![nw-rpn_hotkeys](https://github.com/user-attachments/assets/50656c7d-c39f-4401-817c-939c62c776df)
 
 A remark for the [(] key, which emulates [R↓] of HP calculators:
 
