@@ -268,7 +268,7 @@ while True:
     elif keydown(KEY_SQUARE):
         evaluate1(lambda x: x*x)
 
-    # SHIFT: reciprocal trig, ROLL up, CLEAR
+    # SHIFT: reciprocal trig, ROLL up, CLEAR, OVER
 
     elif keydown(KEY_SHIFT):
         pressed = False
@@ -301,6 +301,12 @@ while True:
                 entry = ""
                 pressed = True
                 display()
+            if keydown(KEY_ANS):  # OVER
+                if fixed or len(stack) >= 2:
+                    push(stack[1])
+                pressed = True
+                display()
+                  
 
     # Not labeled unary operators
 
