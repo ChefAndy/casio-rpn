@@ -273,6 +273,7 @@ while True:
     elif keydown(KEY_SHIFT):
         pressed = False
         draw_string("shift",270,0)
+        sleep(0.2)
         while not pressed:
             if keydown(KEY_SINE):
                 evaluate1(lambda x: asin(x))
@@ -306,7 +307,9 @@ while True:
                     push(stack[1])
                 pressed = True
                 display()
-                  
+            if keydown(KEY_SHIFT):  # Quit shift mode
+                pressed = True
+                display()
 
     # Not labeled unary operators
 
@@ -333,6 +336,7 @@ while True:
     elif keydown(KEY_ALPHA):
         pressed = False
         draw_string("alpha",270,0)
+        sleep(0.2)
         while not pressed:
             if keydown(KEY_DOT):  # !: factorial
                 evaluate1(lambda x: factorial(int(x)))
@@ -367,6 +371,9 @@ while True:
             if keydown(KEY_ZERO):  # ?: Random number in [0;1[
                 if not entry:
                     push(random())
+                pressed = True
+                display()
+            if keydown(KEY_ALPHA):  # Quit alpha mode
                 pressed = True
                 display()
               
