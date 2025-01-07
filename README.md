@@ -27,7 +27,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Bugs**
-- shift & alpha should be deactivable
 - handle operation errors (div by 0 and such)
 
 **Features**
