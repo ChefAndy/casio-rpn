@@ -48,6 +48,17 @@ def display():
     draw_string(entry, 10, levels*h + shift + shift%9, (0,0,0), (255,254,255))
     sleep(0.2)
 
+# Highlight selected stack level if any
+def selected(level):
+    if fixed:
+        levels = 4
+        shift = 13
+    else:
+        levels = 8
+        shift = 3
+    h = 222 // (levels+1)
+    draw_string(str(stack[level]), 310 - 10*len(str(stack[level])), h*(levels-1-level) + shift, (138,141,139), (214,213,231))
+
 # Python-specific: keep integers and not floats if possible
 def python_int(foo):
     foo = float(foo)
@@ -236,13 +247,33 @@ while True:
             stack[0] = stack[1]
             stack[1] = swap
         display()
-
     elif keydown(KEY_BACKSPACE):  # Drops stack top or deletes cipher
         if not entry and stack:
             drop()
         else:
             entry = entry[:-1]
         display()
+    elif keydown(KEY_UP):  # Selection of stack levels
+        if not fixed and stack:
+            level = 0
+            selected(level)
+            sleep(0.2)
+            while level >= 0:
+                if keydown(KEY_UP) and level < len(stack)-1:
+                    level +=1
+                    display()
+                    selected(level)
+                if keydown(KEY_DOWN):
+                    level -= 1
+                    display()
+                    selected(level)
+                if keydown(KEY_BACKSPACE):  # DROPs first levels
+                    stack = stack[level+1:]
+                    level = -1
+                if keydown(KEY_OK) or keydown(KEY_EXE):  # PICKs actual level and copy to stack top
+                    stack[0] = stack[level]
+                    level = -1
+            display()
 
     # Unary operators
 
