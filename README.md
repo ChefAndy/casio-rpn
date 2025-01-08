@@ -4,7 +4,6 @@ Python script for the scientific Numworks calculator, enabling to type in RPN in
 
 ### Keystrokes
 - Basic operations are mapped to the usual buttons.
-- Use the [↑] and [↓] arrows to select stack levels. When a level is selected, press [⌫] to DROP all levels from to to the selected, or press [OK] or [EXE] to PICK the value in the selected level and copy it on stack top instead of the actual value.
 - [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as LastX, OVER, ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
 
 ![nw-rpn_hotkeys](https://github.com/user-attachments/assets/50656c7d-c39f-4401-817c-939c62c776df)
@@ -19,6 +18,8 @@ A remark for the [(] key, which emulates [R↓] of HP calculators:
 On [x,n,t] key, the user may choose between two RPN variants:
 - either dynamic levels 1,2,3,… with infinite amount of inputs (default)
 - either X,Y,Z,T levels with dropping of oldest inputs, and T keeping its value
+
+In dynamic mode, use the [↑] and [↓] arrows to select stack levels. When a level is selected, press [⌫] to DROP all levels from to to the selected, or press [OK] or [EXE] to PICK the value in the selected level and copy it on stack top instead of the actual value.
 
 ### Test it & get it now
 On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
