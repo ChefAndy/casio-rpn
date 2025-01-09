@@ -29,8 +29,8 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Bugs**
-- Pressing on [↩] should not quit the program
-- Handle operation errors (div by 0 and such)
+- Display error messages for undefined operations (as already done for division by zero)
+-  Pressing on [↩] should not quit the program [but may be due to Epsilon contraints]
 
 **Features**
 - add a narrow no-break space every 3 digits from right
