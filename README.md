@@ -29,7 +29,8 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Bugs**
-- handle operation errors (div by 0 and such)
+- Pressing on [↩] should not quit the program
+- Handle operation errors (div by 0 and such)
 
 **Features**
 - add a narrow no-break space every 3 digits from right
