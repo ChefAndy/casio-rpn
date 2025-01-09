@@ -119,6 +119,20 @@ def prime_facto(n):
        div += 1
     return 1
 
+# Error message box
+def error(text):
+    width = 10*len(text) + 32
+    x  = (320 - width) // 2
+    fill_rect(x,89, width,44, color(0,0,0))
+    draw_string(text, x+16,102, (255,254,255), (0,0,0))
+    sleep(0.5)
+    pressed = False
+    while not pressed:
+        for i in range(53):
+            if keydown(i):
+                pressed = True
+    display()
+
 # Hotkeys recap toolbox
 def toolbox():
     # Title
@@ -152,7 +166,6 @@ fixed = False
 stack = []
 entry = ""
 lastx = ""
-
 
 display()
 while True:
@@ -358,7 +371,10 @@ while True:
     elif keydown(KEY_MULTIPLICATION):
         evaluate2(lambda x,y: x*y)
     elif keydown(KEY_DIVISION):
-        evaluate2(lambda x,y: x/y)
+        if entry == "0" or (not entry and stack and stack[0] == 0):
+            error("Division by zero")
+        else:
+            evaluate2(lambda x,y: x/y)
     elif keydown(KEY_POWER):
         evaluate2(lambda x,y: x**y)
 
