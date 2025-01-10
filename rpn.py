@@ -83,25 +83,45 @@ def push(foo):
 def evaluate1(operation):
     global entry, stack, lastx
     if not entry and stack:
-        lastx = stack[0]
-        stack[0] = python_int(operation(stack[0]))
+        try:
+            result = operation(stack[0])
+        except Exception as message:
+            error(message)
+        else:
+            lastx = stack[0]
+            stack[0] = python_int(result)
     elif entry:
-        lastx = entry
-        stack.insert(0,python_int(operation(float(entry))))
-        entry = ""
+        try:
+            result = operation(float(entry))
+        except Exception as message:
+            error(message)
+        else:
+            lastx = entry
+            stack.insert(0,python_int(result))
+            entry = ""
     display()
 
 # Binary operations
 def evaluate2(operation):
     global entry, stack, lastx
     if not entry and len(stack)>=2:
-        lastx = stack[0]
-        stack[1] = python_int(operation(stack[1], stack[0]))
-        drop()
+        try:
+            result = operation(stack[1], stack[0])
+        except Exception as message:
+            error(message)
+        else:
+            lastx = stack[0]
+            stack[1] = python_int(result)
+            drop()
     elif entry and stack:
-        lastx = entry
-        stack[0] = python_int(operation(stack[0], float(entry)))
-        entry = ""
+        try:
+            result = operation(stack[0], float(entry))
+        except Exception as message:
+            error(message)
+        else:
+            lastx = entry
+            stack[0] = python_int(result)
+            entry = ""
     display()
 
 # Converting decimal to sexagesimal
@@ -121,6 +141,7 @@ def prime_facto(n):
 
 # Error message box
 def error(text):
+    text = str(text)
     width = 10*len(text) + 32
     x  = (320 - width) // 2
     fill_rect(x,89, width,44, color(0,0,0))
@@ -371,10 +392,7 @@ while True:
     elif keydown(KEY_MULTIPLICATION):
         evaluate2(lambda x,y: x*y)
     elif keydown(KEY_DIVISION):
-        if entry == "0" or (not entry and stack and stack[0] == 0):
-            error("Division by zero")
-        else:
-            evaluate2(lambda x,y: x/y)
+        evaluate2(lambda x,y: x/y)
     elif keydown(KEY_POWER):
         evaluate2(lambda x,y: x**y)
 
