@@ -29,8 +29,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Bugs**
-- Fix: allow to type a minus sign after pressing [×10^x] on entry command line
-- Check if double comma on entry command line or display error
 - Pressing on [↩] should not quit the program (see [here](https://github.com/numworks/epsilon/issues/2282#issuecomment-2580960830))
 
 **Features**
