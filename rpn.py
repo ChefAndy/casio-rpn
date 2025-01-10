@@ -75,9 +75,14 @@ def drop():
 
 # Pushing something to the stack
 def push(foo):
-    global lastx
-    lastx = foo
-    stack.insert(0, python_int(foo))
+    try:
+        top = python_int(foo)
+    except Exception as message:
+        error(message)
+    else:
+        global lastx
+        lastx = foo
+        stack.insert(0, top)
 
 # Unary operations
 def evaluate1(operation):
@@ -388,7 +393,10 @@ while True:
     elif keydown(KEY_PLUS):
         evaluate2(lambda x,y: x+y)
     elif keydown(KEY_MINUS):
-        evaluate2(lambda x,y: x-y)
+        if entry and entry[-1] == "e" and entry.count("-") == 0:
+            entry += "-"
+        else:
+            evaluate2(lambda x,y: x-y)
     elif keydown(KEY_MULTIPLICATION):
         evaluate2(lambda x,y: x*y)
     elif keydown(KEY_DIVISION):
