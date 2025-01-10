@@ -457,6 +457,11 @@ while True:
     elif keydown(KEY_TOOLBOX):
         toolbox()
 
+    # Back to NumWorks menu
+    
+    elif keydown(KEY_HOME):
+        quit()
+
     # Idle timeout before next inf. loop
 
     sleep(0.08)
