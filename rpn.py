@@ -1,3 +1,5 @@
+import micropython as mp
+mp.kbd_intr(-1) # Disable KeyboardInterrupt
 from ion import *
 from kandinsky import *
 from math import *
