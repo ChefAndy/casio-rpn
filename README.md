@@ -28,9 +28,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 ### Roadmap
 Here are a few ideas for improvements:
 
-**Bugs**
-- Pressing on [↩] should not quit the program (see [here](https://github.com/numworks/epsilon/issues/2282#issuecomment-2580960830))
-
 **Features**
 - add a narrow no-break space every 3 digits from right
 - [var] for a dedicated Conversions menu
