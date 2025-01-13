@@ -28,14 +28,16 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 ### Roadmap
 Here are a few ideas for improvements:
 
-**Features**
-- [S] for stats (mean, median, quartiles, standard deviation, …)
+**GUI Updates**
+- Revamp the Hotkey/Toolbox dialog and add missing functions (e.g. [S] for stats, [shift]+[Ans] for OVER)
 - [var] for a dedicated Conversions menu
+- When selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
+- display large numbers as approximations instead of overflowing to the left
+- add a narrow no-break space every 3 digits from right
+
+**Features**
 - Study the possibility of *setting* angles to degrees/radians instead of *converting*
 - When selecting a level in dynamic mode: n ROLL
-- When selecting a level in dynamic mode: `…` submenu for PICK, DROP, and n ROLL
-- display large numbers as approximations instead of overflowing to the left
-- interactive “clickable” menus
 - switch between fixed number of d.p., scientific notation, and so on
-- add a narrow no-break space every 3 digits from right
+- interactive “clickable” menus
 - store to memories
