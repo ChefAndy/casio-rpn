@@ -146,6 +146,31 @@ def prime_facto(n):
        div += 1
     return 1
 
+# Median of a list
+def med(data):
+    s = sorted(data)
+    n = len(s)
+    if n % 2 == 1:
+        return s[n//2]
+    else:
+        return (s[n//2 - 1] + s[n//2]) / 2
+
+# Quartiles (1st or 3rd) of a list
+def quartile(data, q):
+    s = sorted(data)
+    n = len(s)
+    i = ceil(q/4 * n)
+    return s[i - 1]
+
+# Standard deviation of a list
+def stdev(s):
+    m = sum(s) / len(s)
+    v = 0
+    for i in s:
+        v += (i - m)**2
+    v = v / len(s)
+    return sqrt(v)
+
 # Error message box
 def error(text):
     text = str(text)
@@ -182,7 +207,43 @@ def toolbox():
     draw_string("P: prime fact.   ?: rand", 35,200)
     # Closing the Hotkeys toolbox
     sleep(0.5)
-    while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX):
+    while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX) and not keydown(KEY_BACK):
+        None
+    display()
+
+# Statistics toolbox
+def statistics():
+    # What to calculate?
+    desc = ["Minimum", "1st quartile", "Median", "3rd quartile", "Maximum", "Mean", "Std deviation", "Nb of data", "Sum of values"]
+    stat = ["Min", "Q1", "Med", "Q3", "Max", "x", "σ", "n", "Σx"]
+    values = [min(stack), quartile(stack,1), med(stack), quartile(stack,3), max(stack), sum(stack)/len(stack), stdev(stack), len(stack), sum(stack)]
+    # Dialog title
+    fill_rect(27,27, 266,21, color(65,64,65))
+    fill_rect(28,28, 264,19, color(108,99,115))
+    draw_string("Statistics", 110,28, (255,254,255), (108,99,115))
+    # Dialog contents
+    fill_rect(27,48, 266,174, color(238,238,238))
+    fill_rect(28,49, 264,173, color(255,254,255))
+    # Line backgrounds
+    for i in range(max(len(stat), len(values))):
+         fill_rect(28, 49 + 19*i, 264, 19, (245+10*(i%2), 250+4*(i%2), 255))
+    # Name of statistic then notation
+    for i in range(len(desc)):
+        draw_string(desc[i], 162-10*len(desc[i]), 50 + 19*i, (0,0,0), (245+10*(i%2), 250+4*(i%2), 255))
+    for i in range(len(stat)):
+        draw_string(stat[i], 185-5*len(stat[i]), 50 + 19*i, (180,180,180), (245+10*(i%2), 250+4*(i%2), 255))
+    # Workaround: draw a bar over for the missing mean glyph
+    fill_rect(180, 148, 10, 1, color(180,180,180))
+    # Display computed values
+    for i in range(len(values)):
+        txt = str(values[i])[0:8]
+        draw_string(txt, 285-10*len(txt), 50 + 19*i, (0,0,0), (245+10*(i%2), 250+4*(i%2), 255))
+    # Separators for more convenient reading
+    fill_rect(28, 49 + 19*5, 264, 1, color(180,180,180))
+    fill_rect(28, 49 + 19*7, 264, 1, color(180,180,180))
+    # Closing the Hotkeys toolbox
+    sleep(0.5)
+    while not keydown(KEY_OK) and not keydown(KEY_BACK):
         None
     display()
 
@@ -442,6 +503,11 @@ while True:
                     push(prime_facto(int(entry)))
                     entry = ""
                 pressed = True
+                display()
+            if keydown(KEY_FIVE):  # S: Statistics
+                pressed = True
+                if not fixed and len(stack) >= 2:
+                    statistics()
                 display()
             if keydown(KEY_ZERO):  # ?: Random number in [0;1[
                 if not entry:
