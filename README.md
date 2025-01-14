@@ -3,15 +3,17 @@
 Python script for the scientific Numworks calculator, enabling to type in RPN in a graphical user interface.
 
 ### Keystrokes
-- Basic operations are mapped to the usual buttons.
-- [Toolbox] button allows the user to display some other hotkeys, including RPN-specific functions as LastX, OVER, ROLL, SWAP or DUPlicate, or prime factorisation or converting degrees from/to radians, or Fahrenheit/Celsius.
+- Basic operations are mapped to the usual keys.
+- [Toolbox] key allows the user to display some other hotkeys, including RPN-specific functions as LastX, OVER, ROLL, SWAP, DUPlicate, …
+- [var] key shows functionalities mapped to [alpha]+{key}: prime factorisation, statistics, random, converting (degrees/radians, Fahrenheit/Celsius), random, …
 
-![nw-rpn_hotkeys](https://github.com/user-attachments/assets/50656c7d-c39f-4401-817c-939c62c776df)
+![nw-rpn_hotkeys](https://github.com/user-attachments/assets/844d718f-ada6-4167-80ac-2a7fe744cdc9)
+
 
 A remark for the [(] key, which emulates [R↓] of HP calculators:
 
 - used as-is, rotates the stack downwards
-- with shift, rotates the stack upwards
+- with [shift], rotates the stack upwards
 - if an natural number `n` is on the command line, rotates only the first `n` stack levels
 
 ### Two RPN stack variants
@@ -29,9 +31,8 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **GUI Updates**
-- Revamp the Hotkey/Toolbox dialog and add missing functions (e.g. [S] for stats, [shift]+[Ans] for OVER)
-- [var] for a dedicated Conversions menu
 - When selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
+- [BACK] to quit level selection in dynamic mode
 - display large numbers as approximations instead of overflowing to the left
 - add a narrow no-break space every 3 digits from right
 
