@@ -186,28 +186,51 @@ def error(text):
                 pressed = True
     display()
 
-# Hotkeys recap toolbox
+# RPN hotkeys toolbox
 def toolbox():
-    # Title
+    keys = ["xnt", " (", " )", "Ans", "[s]+Ans", " i", " ,"]
+    desc = ["Fixed/dynamic stack", "ROLL (n)/all levels", "SWAP last two levels", "Copy last X value", "Copy 2nd level", "Inverse", "Change signs"]
+    # Dialog title
     fill_rect(27,27, 266,21, color(65,64,65))
     fill_rect(28,28, 264,19, color(108,99,115))
     draw_string("Hotkeys", 125,28, (255,254,255), (108,99,115))
-    # Contents
+    # Dialog contents
     fill_rect(27,48, 266,174, color(238,238,238))
     fill_rect(28,49, 264,173, color(255,254,255))
-    draw_string("xnt: fixed/dynamic stack", 35,52)
-    fill_rect(28,74, 264,1, color(238,238,238))
-    draw_string("D: rad → deg     i: 1/x", 35,80)
-    draw_string("R: deg → rad     ,:  ±", 35,100)
-    fill_rect(28,124, 264,1, color(238,238,238))
-    draw_string("C: °F → °C       (: nROLL", 35,130)
-    draw_string("F: °C → °F       ): SWAP", 35,150)
-    fill_rect(28,174, 264,1, color(238,238,238))
-    draw_string("H: dec→h:min   Ans: LastX", 35,180)
-    draw_string("P: prime fact.   ?: rand", 35,200)
-    # Closing the Hotkeys toolbox
+    # Lists keys next to their functionality
+    for i in range(len(keys)):
+        y = 49 + i * 174 // len(keys)
+        draw_string(keys[i], 35, y+4)
+        draw_string(desc[i], 285 - 10*len(desc[i]), y+4, (164,165,164), (255,254,255))
+        # Draw a separator between each line
+        fill_rect(28, y-1, 264, 1, (238,238,238))
+    # Closing the hotkeys toolbox
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_TOOLBOX) and not keydown(KEY_BACK):
+        None
+    display()
+
+# Alpha shortcuts toolbox
+def varbox():
+    keys = ["D", "R", "C", "F", "H", "P", "S", "?"]
+    desc = ["Convert rad to °", "Convert ° to rad", "Convert °F to °C", "Convert °C to °F", "Convert hrs to h:min", "Prime factorisation", "Statistics", "Random number in [0,1)"]
+    # Dialog title
+    fill_rect(27,27, 266,21, color(65,64,65))
+    fill_rect(28,28, 264,19, color(108,99,115))
+    draw_string("Alpha shortcuts", 85,28, (255,254,255), (108,99,115))
+    # Dialog contents
+    fill_rect(27,48, 266,174, color(238,238,238))
+    fill_rect(28,49, 264,173, color(255,254,255))
+    # Lists keys next to their functionality
+    for i in range(len(keys)):
+        y = 49 + i * 174 // len(keys)
+        draw_string(keys[i], 35, y+2)
+        draw_string(desc[i], 285 - 10*len(desc[i]), y+2, (164,165,164), (255,254,255))
+        # Draw a separator between each line
+        fill_rect(28, y-1, 264, 1, (238,238,238))
+    # Closing the Alpha shortcuts toolbox
+    sleep(0.5)
+    while not keydown(KEY_OK) and not keydown(KEY_VAR) and not keydown(KEY_BACK):
         None
     display()
 
@@ -232,7 +255,7 @@ def statistics():
         draw_string(desc[i], 162-10*len(desc[i]), 50 + 19*i, (0,0,0), (245+10*(i%2), 250+4*(i%2), 255))
     for i in range(len(stat)):
         draw_string(stat[i], 185-5*len(stat[i]), 50 + 19*i, (180,180,180), (245+10*(i%2), 250+4*(i%2), 255))
-    # Workaround: draw a bar over for the missing mean glyph
+    # Workaround: draw a bar over x for the missing "mean" glyph
     fill_rect(180, 148, 10, 1, color(180,180,180))
     # Display computed values
     for i in range(len(values)):
@@ -241,7 +264,7 @@ def statistics():
     # Separators for more convenient reading
     fill_rect(28, 49 + 19*5, 264, 1, color(180,180,180))
     fill_rect(28, 49 + 19*7, 264, 1, color(180,180,180))
-    # Closing the Hotkeys toolbox
+    # Closing the statistics toolbox
     sleep(0.5)
     while not keydown(KEY_OK) and not keydown(KEY_BACK):
         None
@@ -323,7 +346,7 @@ while True:
             stack.insert(0, python_int(entry))
         push(lastx)
         display()
-    elif keydown(KEY_EXE):  # ENTER, DUP
+    elif keydown(KEY_EXE) or keydown(KEY_OK):  # ENTER, DUP
         if entry:
             push(entry)
             entry = ""
@@ -518,16 +541,17 @@ while True:
                 pressed = True
                 display()
               
-    # Hotkeys / Help
-
+    # RPN Hotkeys
     elif keydown(KEY_TOOLBOX):
         toolbox()
 
+    # Alpha shortcuts
+    elif keydown(KEY_VAR):
+        varbox()
+
     # Back to NumWorks menu
-    
     elif keydown(KEY_HOME):
         quit()
 
     # Idle timeout before next inf. loop
-
     sleep(0.08)
