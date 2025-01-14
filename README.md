@@ -30,6 +30,9 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 ### Roadmap
 Here are a few ideas for improvements:
 
+**Bugfix**
+- Typing an invalid number (e.g. two .. ) then [Ans] raises a ValueError exception, quitting the program
+
 **GUI Updates**
 - When selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
 - [BACK] to quit level selection in dynamic mode
