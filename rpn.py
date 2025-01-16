@@ -398,6 +398,8 @@ while True:
                 if keydown(KEY_OK) or keydown(KEY_EXE):  # PICKs actual level and copy to stack top
                     stack[0] = stack[level]
                     level = -1
+                if keydown(KEY_BACK):  # Exit selection mode
+                    level = -1
             display()
 
     # Unary operators
