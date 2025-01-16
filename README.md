@@ -28,7 +28,7 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 
 
 ### Roadmap
-Here are a few ideas for improvements:
+Here are a few ideas for future improvements:
 
 **Bugfix**
 - typing an invalid number (e.g. two .. ) then [Ans] raises a ValueError exception, quitting the program
@@ -45,9 +45,11 @@ Here are a few ideas for improvements:
 - when selecting a level in dynamic mode: n ROLL
 - switch between fixed number of d.p., scientific notation, and so on
 - interactive “clickable” menus
+- conversion tool on [STO→]
+- vectors? (with `[` and `]`): add, substract, scalar multiplication, norm (with `[N]`), dot product, cross product, determinant?…
 
 **Misc**
-Read through, homogenise and clean the whole code
+- Read through, homogenise and clean the whole code
 
 **Discarded ideas**
 - store to memories: non-pertinence of data when exiting the Python script
