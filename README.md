@@ -34,6 +34,7 @@ Here are a few ideas for improvements:
 - typing an invalid number (e.g. two .. ) then [Ans] raises a ValueError exception, quitting the program
 
 **GUI Updates**
+- statistics displayed “fullscreen” instead of inside a dialogbox.
 - add a blinking cursor in the entry command line
 - when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
 - display large numbers as approximations instead of overflowing to the left
