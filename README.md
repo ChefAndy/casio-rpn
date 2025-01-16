@@ -35,7 +35,6 @@ Here are a few ideas for improvements:
 
 **GUI Updates**
 - When selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
-- [BACK] to quit level selection in dynamic mode
 - display large numbers as approximations instead of overflowing to the left
 - add a narrow no-break space every 3 digits from right
 
@@ -45,3 +44,6 @@ Here are a few ideas for improvements:
 - switch between fixed number of d.p., scientific notation, and so on
 - interactive “clickable” menus
 - store to memories
+
+**Misc**
+Read through, homogenise and clean the whole code
