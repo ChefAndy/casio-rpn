@@ -31,19 +31,22 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for improvements:
 
 **Bugfix**
-- Typing an invalid number (e.g. two .. ) then [Ans] raises a ValueError exception, quitting the program
+- typing an invalid number (e.g. two .. ) then [Ans] raises a ValueError exception, quitting the program
 
 **GUI Updates**
-- When selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
+- add a blinking cursor in the entry command line
+- when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
 - display large numbers as approximations instead of overflowing to the left
 - add a narrow no-break space every 3 digits from right
 
 **Features**
-- Study the possibility of *setting* angles to degrees/radians instead of *converting*
-- When selecting a level in dynamic mode: n ROLL
+- study the possibility of *setting* angles to degrees/radians instead of *converting*
+- when selecting a level in dynamic mode: n ROLL
 - switch between fixed number of d.p., scientific notation, and so on
 - interactive “clickable” menus
-- store to memories
 
 **Misc**
 Read through, homogenise and clean the whole code
+
+**Discarded ideas**
+- store to memories: non-pertinence of data when exiting the Python script
