@@ -30,6 +30,9 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 ### Roadmap
 Here are a few ideas for future improvements:
 
+**Bugfix**
+- with huge numbers, python_int() raises an OverflowError, cannot converting inf to int
+
 **GUI Updates**
 - statistics displayed “fullscreen” instead of inside a dialogbox.
 - add a blinking cursor in the entry command line
