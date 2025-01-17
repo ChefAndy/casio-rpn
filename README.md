@@ -30,9 +30,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 ### Roadmap
 Here are a few ideas for future improvements:
 
-**Bugfix**
-- typing an invalid number (e.g. two .. ) then [Ans] raises a ValueError exception, quitting the program
-
 **GUI Updates**
 - statistics displayed “fullscreen” instead of inside a dialogbox.
 - add a blinking cursor in the entry command line
