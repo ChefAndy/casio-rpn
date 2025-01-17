@@ -342,10 +342,13 @@ while True:
                     break
         display()
     elif keydown(KEY_ANS):  # LastX
-        if entry:
-            stack.insert(0, python_int(entry))
-        push(lastx)
-        display()
+        try:
+            if entry: stack.insert(0, python_int(entry))
+        except Exception as message:
+            error(message)
+        else:
+            push(lastx)
+            display()
     elif keydown(KEY_EXE) or keydown(KEY_OK):  # ENTER, DUP
         if entry:
             push(entry)
@@ -373,10 +376,8 @@ while True:
             stack[1] = swap
         display()
     elif keydown(KEY_BACKSPACE):  # Drops stack top or deletes cipher
-        if not entry and stack:
-            drop()
-        else:
-            entry = entry[:-1]
+        if not entry and stack: drop()
+        else: entry = entry[:-1]
         display()
     elif keydown(KEY_UP):  # Selection of stack levels
         if not fixed and stack:
