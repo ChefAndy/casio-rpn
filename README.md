@@ -48,8 +48,5 @@ Here are a few ideas for future improvements:
 - conversion tool on [STO→]
 - vectors? (with `[` and `]`): add, substract, scalar multiplication, norm (with `[N]`), dot product, cross product, determinant?…
 
-**Misc**
-- Read through, homogenise and clean the whole code
-
 **Discarded ideas**
 - store to memories: non-pertinence of data when exiting the Python script
