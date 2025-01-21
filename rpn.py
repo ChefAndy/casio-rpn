@@ -1,3 +1,6 @@
+__author__ = "Alexandre ANDRÉ"
+__version__ = "2025-01-21 T 22:17:00 UTC+1"
+
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
 from random import random
@@ -13,11 +16,13 @@ XMAX = 320
 YMAX = 222
 
 BLACK = color(0, 0, 0)
+MGREY = color(164, 165, 164)
 DGREY = color(180, 180, 180)
 LGREY = color(238, 238, 238)
 WHITE = color(255, 254, 255)
 
 LBLUE = color(245, 250, 255)
+YELLOW = color(255, 181, 0)
 
 SEPARATOR = color(223,217,222)
 TITLE_BG = color(108, 99, 115)
@@ -206,7 +211,7 @@ def toolbox():
     for i in range(len(keys)):
         y = 49 + i * 174 // len(keys)
         draw_string(keys[i], 35, y + 4)
-        draw_string(desc[i], 285 - 10*len(desc[i]), y+4, (164,165,164), WHITE)
+        draw_string(desc[i], 285 - 10*len(desc[i]), y+4, MGREY, WHITE)
         # Draw a separator between each line
         fill_rect(28, y - 1, 264, 1, SEPARATOR)
     sleep(0.5)
@@ -240,9 +245,9 @@ def varbox():
     for i in range(len(keys)):
         y = 49 + i * 174 // len(keys)
         draw_string(keys[i], 35, y + 2)
-        draw_string(desc[i], 285 - 10*len(desc[i]), y+2, (164,165,164), WHITE)
+        draw_string(desc[i], 285 - 10*len(desc[i]), y+2, MGREY, WHITE)
         # Draw a separator between each line
-        fill_rect(28, y - 1, 264, 1, (238, 238, 238))
+        fill_rect(28, y - 1, 264, 1, LGREY)
     sleep(0.5)
     # Close the Alpha shortcuts dialog on some keys
     pressed = False
@@ -284,7 +289,7 @@ def statistics():
     # Line backgrounds
     for i in range(len(stat)):
         bg_color = LBLUE if i % 2 == 0 else WHITE
-        y = 50 + 19*i
+        y = 50 + 19*i
         fill_rect(28, y - 1, 264, 19, bg_color)
         draw_string(desc[i], 162 - 10*len(desc[i]), y, BLACK, bg_color)
         draw_string(stat[i], 185 - 5*len(stat[i]), y, DGREY, bg_color)
@@ -427,7 +432,7 @@ while True:
     # SHIFT: reciprocal trig, ROLL up, CLEAR, OVER
     elif keydown(KEY_SHIFT):
         pressed = False
-        draw_string("shift", 270, 0)
+        draw_string("shift", 270, 0, WHITE, YELLOW)
         sleep(0.2)
         while not pressed:
             if keydown(KEY_SINE):
@@ -465,7 +470,7 @@ while True:
     # ALPHA operators
     elif keydown(KEY_ALPHA):
         pressed = False
-        draw_string("alpha", 270, 0)
+        draw_string("alpha", 270, 0, WHITE, YELLOW)
         sleep(0.2)
         while not pressed:
             if keydown(KEY_DOT):  # !: factorial
