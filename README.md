@@ -35,7 +35,6 @@ Here are a few ideas for future improvements:
 
 **GUI Updates**
 - statistics displayed “fullscreen” instead of inside a dialogbox.
-- add a blinking cursor in the entry command line
 - when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
 - display large numbers as approximations instead of overflowing to the left (max: 27 digits)
 - add a narrow no-break space every 3 digits from right
