@@ -1,10 +1,10 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-21 T 22:17:00 UTC+1"
+__version__ = "2025-01-22 T 09:30:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
+from time import sleep, monotonic
 from random import random
-from time import sleep
 
 from ion import *
 from kandinsky import color, draw_string, fill_rect
@@ -60,9 +60,9 @@ def display():
     # Entry command line
     fill_rect(0, levels*h, XMAX, 1, SEPARATOR)
     fill_rect(0, levels*h + 1, XMAX, YMAX - (levels-1)*h, WHITE)
-    draw_string(entry, 10, levels*h + shift + shift % 9, BLACK, WHITE)
+    y = YMAX - 23 if not fixed else YMAX - 30
+    draw_string(entry, 5, y, BLACK, WHITE)
     sleep(0.2)
-
 
 def selected(level):
     """Highlight selected stack level, if any."""
@@ -80,12 +80,10 @@ def python_int(foo):
     if foo == int(foo): foo = int(foo)
     return foo
 
-
 def drop():
     """Drop the stack top level, keep T level value if fixed stack mode."""
     stack.pop(0)
     if fixed: stack.append(stack[2])
-
 
 def push(foo):
     """Push something onto the stack."""
@@ -115,7 +113,6 @@ def evaluate1(operation):
             entry = ""
     display()
 
-
 def evaluate2(operation):
     """Evaluate binary operations."""
     global entry, stack, lastx
@@ -142,7 +139,6 @@ def hms(dec):
     minutes = (dec-hours) * 60
     return hours + minutes/100
 
-
 def prime_facto(n):
     """Find the lowest prime divisor of a number n."""
     div = 2
@@ -158,14 +154,12 @@ def med(data):
     if n % 2 == 1: return s[n//2]
     else: return (s[n//2 - 1] + s[n//2]) / 2
 
-
 def quartile(data, q):
     """Determine the 1st or 3rd quartile of a list of numbers."""
     s = sorted(data)
     n = len(s)
     i = ceil(q/4 * n)
     return s[i - 1]
-
 
 def stdev(s):
     """Calculate the standard deviation of a list of numbers."""
@@ -518,6 +512,12 @@ while True:
     elif keydown(KEY_TOOLBOX): toolbox()  # RPN Hotkeys
     elif keydown(KEY_VAR): varbox()  # Alpha shortcuts
     elif keydown(KEY_HOME): quit()  # Back to NumWorks homescreen
+
+    # Blinking cursor
+    x = 5 + 10*len(entry)
+    y = YMAX - 23 if not fixed else YMAX - 30
+    color = BLACK if int(monotonic()) % 2 == 0 else WHITE
+    fill_rect(x, y, 1, 16, color)
 
     # Idle timeout before next infinite loop
     sleep(0.07)
