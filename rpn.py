@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-23 T 14:00:00 UTC+1"
+__version__ = "2025-01-23 T 21:07:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -32,6 +32,114 @@ YELLOW = color(255, 181, 0)
 SEPARATOR = color(223, 217, 222)
 TITLE_BG = color(108, 99, 115)
 TITLE_BORDER = color(65, 64, 65)
+
+
+# Original state: dynamic empty stack, no lastX, empty entry command line
+fixed = False
+stack = []
+lastx = ""
+entry = ""
+
+
+#############################################################################
+# Functions specific to Reverse Polish Notation, stack manipulation, Python #
+#############################################################################
+
+def python_int(foo):
+    """Python-specific: keep integers instead of floats if possible."""
+    foo = float(foo)
+    if foo == int(foo): foo = int(foo)
+    return foo
+
+def drop():
+    """Drop the stack top level, keep T level value if fixed stack mode."""
+    stack.pop(0)
+    if fixed: stack.append(stack[2])
+
+def push(foo):
+    """Push something onto the stack."""
+    try: top = python_int(foo)
+    except Exception as message: error(message)
+    else:
+        global lastx
+        lastx = foo
+        stack.insert(0, top)
+
+def evaluate1(operation):
+    """Evaluate unary operations."""
+    global entry, stack, lastx
+    if not entry and stack:
+        try: result = operation(stack[0])
+        except Exception as message: error(message)
+        else:
+            lastx = stack[0]
+            stack[0] = python_int(result)
+    elif entry:
+        try: result = operation(float(entry))
+        except Exception as message: error(message)
+        else:
+            lastx = entry
+            stack.insert(0, python_int(result))
+            entry = ""
+    display()
+
+def evaluate2(operation):
+    """Evaluate binary operations."""
+    global entry, stack, lastx
+    if not entry and len(stack) >= 2:
+        try: result = operation(stack[1], stack[0])
+        except Exception as message: error(message)
+        else:
+            lastx = stack[0]
+            stack[1] = python_int(result)
+            drop()
+    elif entry and stack:
+        try: result = operation(stack[0], float(entry))
+        except Exception as message: error(message)
+        else:
+            lastx = entry
+            stack[0] = python_int(result)
+            entry = ""
+    display()
+
+
+#################################################################
+# Mathematical functions mapped to some keys or used in dialogs #
+#################################################################
+
+def hms(dec):
+    """Convert decimal time in hours to sexagesimal format."""
+    hours = int(dec)
+    minutes = int((dec - hours) * 60)
+    seconds = ((dec - hours) * 60 - minutes) * 60
+    return hours + minutes/100 + seconds/10000
+
+def prime_facto(n):
+    """Find the lowest prime divisor of a natural number n."""
+    div = 2
+    while div**2 <= n:
+        if n % div == 0: return div
+        div += 1
+    return 1
+
+def med(data):
+    """Determine the median of a list of numbers."""
+    s = sorted(data); n = len(s)
+    if n % 2 == 1: return s[n//2]
+    else: return (s[n//2 - 1] + s[n//2]) / 2
+
+def quartile(data, q):
+    """Determine the 1st or 3rd quartile of a list of numbers."""
+    s = sorted(data)
+    n = len(s)
+    i = ceil(q/4 * n)
+    return s[i - 1]
+
+def stdev(s):
+    """Calculate the standard deviation of a list of numbers."""
+    m = sum(s) / len(s); v = 0
+    for i in s: v += (i - m)**2
+    return sqrt(v / len(s))
 
 
 ######################################
@@ -223,116 +331,9 @@ def statistics():
     display()
 
 
-#############################################################################
-# Functions specific to Reverse Polish Notation, stack manipulation, Python #
-#############################################################################
-
-def python_int(foo):
-    """Python-specific: keep integers and not floats if possible."""
-    foo = float(foo)
-    if foo == int(foo): foo = int(foo)
-    return foo
-
-def drop():
-    """Drop the stack top level, keep T level value if fixed stack mode."""
-    stack.pop(0)
-    if fixed: stack.append(stack[2])
-
-def push(foo):
-    """Push something onto the stack."""
-    try: top = python_int(foo)
-    except Exception as message: error(message)
-    else:
-        global lastx
-        lastx = foo
-        stack.insert(0, top)
-
-def evaluate1(operation):
-    """Evaluate unary operations."""
-    global entry, stack, lastx
-    if not entry and stack:
-        try: result = operation(stack[0])
-        except Exception as message: error(message)
-        else:
-            lastx = stack[0]
-            stack[0] = python_int(result)
-    elif entry:
-        try: result = operation(float(entry))
-        except Exception as message: error(message)
-        else:
-            lastx = entry
-            stack.insert(0, python_int(result))
-            entry = ""
-    display()
-
-def evaluate2(operation):
-    """Evaluate binary operations."""
-    global entry, stack, lastx
-    if not entry and len(stack) >= 2:
-        try: result = operation(stack[1], stack[0])
-        except Exception as message: error(message)
-        else:
-            lastx = stack[0]
-            stack[1] = python_int(result)
-            drop()
-    elif entry and stack:
-        try: result = operation(stack[0], float(entry))
-        except Exception as message: error(message)
-        else:
-            lastx = entry
-            stack[0] = python_int(result)
-            entry = ""
-    display()
-
-
-#################################################################
-# Mathematical functions mapped to some keys or used in dialogs #
-#################################################################
-
-def hms(dec):
-    """Convert decimal time in hours to sexagesimal format."""
-    hours = int(dec)
-    minutes = (dec-hours) * 60
-    return hours + minutes/100
-
-def prime_facto(n):
-    """Find the lowest prime divisor of a number n."""
-    div = 2
-    while div**2 <= n:
-        if n % div == 0: return div
-        div += 1
-    return 1
-
-def med(data):
-    """Determine the median of a list of numbers."""
-    s = sorted(data); n = len(s)
-    if n % 2 == 1: return s[n//2]
-    else: return (s[n//2 - 1] + s[n//2]) / 2
-
-def quartile(data, q):
-    """Determine the 1st or 3rd quartile of a list of numbers."""
-    s = sorted(data)
-    n = len(s)
-    i = ceil(q/4 * n)
-    return s[i - 1]
-
-def stdev(s):
-    """Calculate the standard deviation of a list of numbers."""
-    m = sum(s) / len(s); v = 0
-    for i in s: v += (i - m)**2
-    return sqrt(v / len(s))
-
-
 #######################################################
 # Main program: infinite loop checking for key inputs #
 #######################################################
-
-# Original state: dynamic empty stack, no lastX, empty entry command line
-fixed = False
-stack = []
-lastx = ""
-entry = ""
-
 
 display()
 while True:
