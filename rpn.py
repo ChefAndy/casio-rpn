@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-23 T 09:05:00 UTC+1"
+__version__ = "2025-01-23 T 14:00:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -11,6 +11,11 @@ from kandinsky import color, draw_string, fill_rect
 
 import micropython as mp
 mp.kbd_intr(-1)  # Disable KeyboardInterrupt
+
+
+###############################################################
+# Constants: screen size and colors from the NumWorks palette #
+###############################################################
 
 XMAX = 320
 YMAX = 222
@@ -28,6 +33,10 @@ SEPARATOR = color(223, 217, 222)
 TITLE_BG = color(108, 99, 115)
 TITLE_BORDER = color(65, 64, 65)
 
+
+######################################
+# Graphical User Interface functions #
+######################################
 
 def display():
     """Refresh the whole screen."""
@@ -65,6 +74,13 @@ def display():
     sleep(0.2)
 
 
+def blink_cursor():
+    x = 5 + 10*len(entry)
+    y = YMAX - 24 if not fixed else YMAX - 31
+    color = BLACK if int(monotonic()) % 2 == 0 else WHITE
+    fill_rect(x, y, 1, 18, color)
+
+
 def selected(level):
     """Highlight selected stack level, if any."""
     if fixed: levels = 4; shift = 13
@@ -73,106 +89,6 @@ def selected(level):
     x = 310 - 10 * len(str(stack[level]))
     y = h * (levels-1-level) + shift
     draw_string(str(stack[level]), x, y, (138,141,139), (214,213,231))
-
-
-def python_int(foo):
-    """Python-specific: keep integers and not floats if possible."""
-    foo = float(foo)
-    if foo == int(foo): foo = int(foo)
-    return foo
-
-
-def drop():
-    """Drop the stack top level, keep T level value if fixed stack mode."""
-    stack.pop(0)
-    if fixed: stack.append(stack[2])
-
-
-def push(foo):
-    """Push something onto the stack."""
-    try: top = python_int(foo)
-    except Exception as message: error(message)
-    else:
-        global lastx
-        lastx = foo
-        stack.insert(0, top)
-
-
-def evaluate1(operation):
-    """Evaluate unary operations."""
-    global entry, stack, lastx
-    if not entry and stack:
-        try: result = operation(stack[0])
-        except Exception as message: error(message)
-        else:
-            lastx = stack[0]
-            stack[0] = python_int(result)
-    elif entry:
-        try: result = operation(float(entry))
-        except Exception as message: error(message)
-        else:
-            lastx = entry
-            stack.insert(0, python_int(result))
-            entry = ""
-    display()
-
-
-def evaluate2(operation):
-    """Evaluate binary operations."""
-    global entry, stack, lastx
-    if not entry and len(stack) >= 2:
-        try: result = operation(stack[1], stack[0])
-        except Exception as message: error(message)
-        else:
-            lastx = stack[0]
-            stack[1] = python_int(result)
-            drop()
-    elif entry and stack:
-        try: result = operation(stack[0], float(entry))
-        except Exception as message: error(message)
-        else:
-            lastx = entry
-            stack[0] = python_int(result)
-            entry = ""
-    display()
-
-
-def hms(dec):
-    """Convert decimal time in hours to sexagesimal format."""
-    hours = int(dec)
-    minutes = (dec-hours) * 60
-    return hours + minutes/100
-
-
-def prime_facto(n):
-    """Find the lowest prime divisor of a number n."""
-    div = 2
-    while div**2 <= n:
-        if n % div == 0: return div
-        div += 1
-    return 1
-
-
-def med(data):
-    """Determine the median of a list of numbers."""
-    s = sorted(data); n = len(s)
-    if n % 2 == 1: return s[n//2]
-    else: return (s[n//2 - 1] + s[n//2]) / 2
-
-
-def quartile(data, q):
-    """Determine the 1st or 3rd quartile of a list of numbers."""
-    s = sorted(data)
-    n = len(s)
-    i = ceil(q/4 * n)
-    return s[i - 1]
-
-
-def stdev(s):
-    """Calculate the standard deviation of a list of numbers."""
-    m = sum(s) / len(s); v = 0
-    for i in s: v += (i - m)**2
-    return sqrt(v / len(s))
 
 
 def error(text):
@@ -306,17 +222,121 @@ def statistics():
     while not keydown(KEY_OK) and not keydown(KEY_BACK): None
     display()
 
-################################################
+
+#############################################################################
+# Functions specific to Reverse Polish Notation, stack manipulation, Python #
+#############################################################################
+
+def python_int(foo):
+    """Python-specific: keep integers and not floats if possible."""
+    foo = float(foo)
+    if foo == int(foo): foo = int(foo)
+    return foo
+
+def drop():
+    """Drop the stack top level, keep T level value if fixed stack mode."""
+    stack.pop(0)
+    if fixed: stack.append(stack[2])
+
+def push(foo):
+    """Push something onto the stack."""
+    try: top = python_int(foo)
+    except Exception as message: error(message)
+    else:
+        global lastx
+        lastx = foo
+        stack.insert(0, top)
+
+def evaluate1(operation):
+    """Evaluate unary operations."""
+    global entry, stack, lastx
+    if not entry and stack:
+        try: result = operation(stack[0])
+        except Exception as message: error(message)
+        else:
+            lastx = stack[0]
+            stack[0] = python_int(result)
+    elif entry:
+        try: result = operation(float(entry))
+        except Exception as message: error(message)
+        else:
+            lastx = entry
+            stack.insert(0, python_int(result))
+            entry = ""
+    display()
+
+def evaluate2(operation):
+    """Evaluate binary operations."""
+    global entry, stack, lastx
+    if not entry and len(stack) >= 2:
+        try: result = operation(stack[1], stack[0])
+        except Exception as message: error(message)
+        else:
+            lastx = stack[0]
+            stack[1] = python_int(result)
+            drop()
+    elif entry and stack:
+        try: result = operation(stack[0], float(entry))
+        except Exception as message: error(message)
+        else:
+            lastx = entry
+            stack[0] = python_int(result)
+            entry = ""
+    display()
+
+
+#################################################################
+# Mathematical functions mapped to some keys or used in dialogs #
+#################################################################
+
+def hms(dec):
+    """Convert decimal time in hours to sexagesimal format."""
+    hours = int(dec)
+    minutes = (dec-hours) * 60
+    return hours + minutes/100
+
+def prime_facto(n):
+    """Find the lowest prime divisor of a number n."""
+    div = 2
+    while div**2 <= n:
+        if n % div == 0: return div
+        div += 1
+    return 1
+
+def med(data):
+    """Determine the median of a list of numbers."""
+    s = sorted(data); n = len(s)
+    if n % 2 == 1: return s[n//2]
+    else: return (s[n//2 - 1] + s[n//2]) / 2
+
+def quartile(data, q):
+    """Determine the 1st or 3rd quartile of a list of numbers."""
+    s = sorted(data)
+    n = len(s)
+    i = ceil(q/4 * n)
+    return s[i - 1]
+
+def stdev(s):
+    """Calculate the standard deviation of a list of numbers."""
+    m = sum(s) / len(s); v = 0
+    for i in s: v += (i - m)**2
+    return sqrt(v / len(s))
+
+
+#######################################################
+# Main program: infinite loop checking for key inputs #
+#######################################################
 
 # Original state: dynamic empty stack, no lastX, empty entry command line
-
 fixed = False
 stack = []
 lastx = ""
 entry = ""
 
+
 display()
 while True:
+
     # Characters the user may enter on the command line
     if keydown(KEY_ZERO): entry += "0"; display()
     elif keydown(KEY_ONE): entry += "1"; display()
@@ -376,10 +396,9 @@ while True:
             stack[0] = stack[1]
             stack[1] = swap
         display()
-    # Drops stack top or deletes last character on the command line
     elif keydown(KEY_BACKSPACE):
-        if not entry and stack: drop()
-        else: entry = entry[:-1]
+        if not entry and stack: drop()  # DROP stack top level
+        else: entry = entry[:-1]  # CLEAR last character on command line
         display()
     elif keydown(KEY_UP):  # Selection of levels if stack is dynamic
         if not fixed and stack:
@@ -430,7 +449,7 @@ while True:
     elif keydown(KEY_DIVISION): evaluate2(lambda x, y: x / y)
     elif keydown(KEY_POWER): evaluate2(lambda x, y: x ** y)
 
-    # SHIFT: reciprocal trig, ROLL up, CLEAR, OVER
+    # SHIFT operators
     elif keydown(KEY_SHIFT):
         pressed = False
         draw_string("shift", 270, 0, WHITE, YELLOW)
@@ -520,11 +539,7 @@ while True:
     elif keydown(KEY_VAR): varbox()  # Alpha shortcuts
     elif keydown(KEY_HOME): quit()  # Back to NumWorks homescreen
 
-    # Blinking cursor
-    x = 5 + 10*len(entry)
-    y = YMAX - 24 if not fixed else YMAX - 31
-    color = BLACK if int(monotonic()) % 2 == 0 else WHITE
-    fill_rect(x, y, 1, 18, color)
+    blink_cursor()
 
     # Idle timeout before next infinite loop
     sleep(0.07)
