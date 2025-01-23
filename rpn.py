@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-22 T 09:30:00 UTC+1"
+__version__ = "2025-01-23 T 07:15:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -24,7 +24,7 @@ WHITE = color(255, 254, 255)
 LBLUE = color(245, 250, 255)
 YELLOW = color(255, 181, 0)
 
-SEPARATOR = color(223,217,222)
+SEPARATOR = color(223, 217, 222)
 TITLE_BG = color(108, 99, 115)
 TITLE_BORDER = color(65, 64, 65)
 
@@ -64,6 +64,7 @@ def display():
     draw_string(entry, 5, y, BLACK, WHITE)
     sleep(0.2)
 
+
 def selected(level):
     """Highlight selected stack level, if any."""
     if fixed: levels = 4; shift = 13
@@ -80,10 +81,12 @@ def python_int(foo):
     if foo == int(foo): foo = int(foo)
     return foo
 
+
 def drop():
     """Drop the stack top level, keep T level value if fixed stack mode."""
     stack.pop(0)
     if fixed: stack.append(stack[2])
+
 
 def push(foo):
     """Push something onto the stack."""
@@ -113,6 +116,7 @@ def evaluate1(operation):
             entry = ""
     display()
 
+
 def evaluate2(operation):
     """Evaluate binary operations."""
     global entry, stack, lastx
@@ -139,12 +143,13 @@ def hms(dec):
     minutes = (dec-hours) * 60
     return hours + minutes/100
 
+
 def prime_facto(n):
     """Find the lowest prime divisor of a number n."""
     div = 2
     while div**2 <= n:
-       if n % div == 0: return div
-       div += 1
+        if n % div == 0: return div
+        div += 1
     return 1
 
 
@@ -154,12 +159,14 @@ def med(data):
     if n % 2 == 1: return s[n//2]
     else: return (s[n//2 - 1] + s[n//2]) / 2
 
+
 def quartile(data, q):
     """Determine the 1st or 3rd quartile of a list of numbers."""
     s = sorted(data)
     n = len(s)
     i = ceil(q/4 * n)
     return s[i - 1]
+
 
 def stdev(s):
     """Calculate the standard deviation of a list of numbers."""
@@ -172,7 +179,7 @@ def error(text):
     """Display an error or exception in a black dialog box."""
     text = str(text)
     width = 10*len(text) + 32
-    x  = (XMAX - width) // 2
+    x = (XMAX - width) // 2
     fill_rect(x, 89, width, 44, BLACK)
     draw_string(text, x + 16, 102, WHITE, BLACK)
     sleep(0.5)
@@ -265,11 +272,11 @@ def statistics():
     stat = ["Min", "Q1", "Med", "Q3", "Max", "x", "σ", "n", "Σx"]
     values = [
             min(stack),
-            quartile(stack,1),
+            quartile(stack, 1),
             med(stack),
-            quartile(stack,3),
+            quartile(stack, 3),
             max(stack),
-            sum(stack)/len(stack),
+            sum(stack) / len(stack),
             stdev(stack),
             len(stack),
             sum(stack)]
@@ -327,7 +334,7 @@ while True:
         display()
     elif keydown(KEY_EE): entry += "e"; display()
     elif keydown(KEY_PI) and not entry: push(pi); display()
-    
+
     # RPN-specific
     elif keydown(KEY_XNT):
         fixed = not fixed  # Switch between fixed or dynamic stack
@@ -381,7 +388,7 @@ while True:
             sleep(0.2)
             while level >= 0:
                 if keydown(KEY_UP) and level < len(stack)-1:
-                    level +=1
+                    level += 1
                     display()
                     selected(level)
                 if keydown(KEY_DOWN):
@@ -438,7 +445,7 @@ while True:
             if keydown(KEY_TANGENT):
                 evaluate1(lambda x: atan(x))
                 pressed = True
-            if keydown(KEY_LEFTPARENTHESIS): # ROLL up
+            if keydown(KEY_LEFTPARENTHESIS):  # ROLL up
                 if entry:
                     pos = float(entry)
                     entry = ""
@@ -447,7 +454,7 @@ while True:
                 elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True
                 display()
-            if keydown(KEY_BACKSPACE): # CLEAR
+            if keydown(KEY_BACKSPACE):  # CLEAR
                 if fixed: stack = [0, 0, 0, 0]
                 else: stack = []
                 entry = ""
