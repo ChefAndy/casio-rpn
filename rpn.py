@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-23 T 07:15:00 UTC+1"
+__version__ = "2025-01-23 T 09:05:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -522,9 +522,9 @@ while True:
 
     # Blinking cursor
     x = 5 + 10*len(entry)
-    y = YMAX - 23 if not fixed else YMAX - 30
+    y = YMAX - 24 if not fixed else YMAX - 31
     color = BLACK if int(monotonic()) % 2 == 0 else WHITE
-    fill_rect(x, y, 1, 16, color)
+    fill_rect(x, y, 1, 18, color)
 
     # Idle timeout before next infinite loop
     sleep(0.07)
