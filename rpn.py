@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-24 T 11:42:00 UTC+1"
+__version__ = "2025-01-24 T 11:50:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -204,13 +204,7 @@ def error(text):
     x = (XMAX - width) // 2
     fill_rect(x, 89, width, 44, BLACK)
     draw_string(text, x + 16, 102, WHITE, BLACK)
-    sleep(0.5)
-    # Discard the dialog box on any key pressed
-    pressed = False
-    while not pressed:
-        for i in range(53):
-            if keydown(i): pressed = True
-    display()
+    dialog_close([key for key in range(53)])
 
 
 def dialog_title(text):
