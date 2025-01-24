@@ -1,5 +1,5 @@
-__author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-23 T 21:07:00 UTC+1"
+__author__ = "Alexandre ANDRÉ"
+__version__ = "2025-01-24 T 11:42:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -181,13 +181,11 @@ def display():
     draw_string(entry, 5, y, BLACK, WHITE)
     sleep(0.2)
 
-
 def blink_cursor():
     x = 5 + 10*len(entry)
     y = YMAX - 24 if not fixed else YMAX - 31
     color = BLACK if int(monotonic()) % 2 == 0 else WHITE
     fill_rect(x, y, 1, 18, color)
-
 
 def selected(level):
     """Highlight selected stack level, if any."""
@@ -215,6 +213,33 @@ def error(text):
     display()
 
 
+def dialog_title(text):
+    """Draw the title bar for a dialog box, string text centered."""
+    fill_rect(27, 27, 266, 21, TITLE_BORDER)
+    fill_rect(28, 28, 264, 19, TITLE_BG)
+    x = (XMAX - 10*len(text)) // 2
+    draw_string(text, x, 28, WHITE, TITLE_BG)
+
+def dialog_contents(items, descriptions):
+    """Display items and their descriptions on lines inside a dialog box."""
+    fill_rect(27, 48, 266, 174, LGREY)
+    fill_rect(28, 49, 264, 173, WHITE)
+    for i in range(len(items)):
+        y = 50 + i * 174 // len(items)
+        draw_string(items[i], 35, y + 15//len(items))
+        x_desc = 285 - 10*len(descriptions[i])
+        draw_string(descriptions[i], x_desc, y + 15//len(items), MGREY, WHITE)
+        fill_rect(28, y - 2, 264, 1, LGREY)
+
+def dialog_close(keys):
+    """Close a dialog only when some keys are pressed."""
+    sleep(0.5)
+    pressed = False
+    while not pressed:
+        for i in keys:
+            if keydown(i): pressed = True
+    display()
+
 def toolbox():
     """Display a dialog with common RPN functions and their mappings."""
     keys = ["xnt", " (", " )", "Ans", "[s]+Ans", " i", " ,"]
@@ -225,27 +250,9 @@ def toolbox():
             "Copy 2nd level",
             "Inverse",
             "Change signs"]
-    # Dialog title
-    fill_rect(27, 27, 266, 21, TITLE_BORDER)
-    fill_rect(28, 28, 264, 19, TITLE_BG)
-    draw_string("Hotkeys", 125, 28, WHITE, TITLE_BG)
-    # Dialog contents
-    fill_rect(27, 48, 266, 174, LGREY)
-    fill_rect(28, 49, 264, 173, WHITE)
-    # Lists keys next to their functionality
-    for i in range(len(keys)):
-        y = 49 + i * 174 // len(keys)
-        draw_string(keys[i], 35, y + 4)
-        draw_string(desc[i], 285 - 10*len(desc[i]), y+4, MGREY, WHITE)
-        # Draw a separator between each line
-        fill_rect(28, y - 1, 264, 1, SEPARATOR)
-    sleep(0.5)
-    # Close the hotkeys toolbox dialog on some keys
-    pressed = False
-    while not pressed:
-        if keydown(KEY_OK) or keydown(KEY_TOOLBOX) or keydown(KEY_BACK):
-            pressed = True
-    display()
+    dialog_title("Hotkeys")
+    dialog_contents(keys, desc)
+    dialog_close([KEY_OK, KEY_TOOLBOX, KEY_BACK])
 
 
 def varbox():
@@ -259,27 +266,9 @@ def varbox():
             "Prime factorisation",
             "Statistics",
             "Random number in [0,1)"]
-    # Dialog title
-    fill_rect(27, 27, 266, 21, TITLE_BORDER)
-    fill_rect(28, 28, 264, 19, TITLE_BG)
-    draw_string("Alpha shortcuts", 85, 28, WHITE, TITLE_BG)
-    # Dialog contents
-    fill_rect(27, 48, 266, 174, LGREY)
-    fill_rect(28, 49, 264, 173, WHITE)
-    # Lists keys next to their functionality
-    for i in range(len(keys)):
-        y = 49 + i * 174 // len(keys)
-        draw_string(keys[i], 35, y + 2)
-        draw_string(desc[i], 285 - 10*len(desc[i]), y+2, MGREY, WHITE)
-        # Draw a separator between each line
-        fill_rect(28, y - 1, 264, 1, LGREY)
-    sleep(0.5)
-    # Close the Alpha shortcuts dialog on some keys
-    pressed = False
-    while not pressed:
-        if keydown(KEY_OK) or keydown(KEY_VAR) or keydown(KEY_BACK):
-            pressed = True
-    display()
+    dialog_title("Alpha shortcuts")
+    dialog_contents(keys, desc)
+    dialog_close([KEY_OK, KEY_VAR, KEY_BACK])
 
 
 def statistics():
@@ -304,10 +293,7 @@ def statistics():
             stdev(stack),
             len(stack),
             sum(stack)]
-    # Dialog title
-    fill_rect(27, 27, 266, 21, TITLE_BORDER)
-    fill_rect(28, 28, 264, 19, TITLE_BG)
-    draw_string("Statistics", 110, 28, WHITE, TITLE_BG)
+    dialog_title("Statistics")
     # Dialog contents
     fill_rect(27, 48, 266, 174, LGREY)
     fill_rect(28, 49, 264, 173, WHITE)
@@ -325,10 +311,7 @@ def statistics():
     # Separators for more convenient reading
     fill_rect(28, 49 + 19*5, 264, 1, DGREY)
     fill_rect(28, 49 + 19*7, 264, 1, DGREY)
-    sleep(0.5)
-    # Close the statistics toolbox
-    while not keydown(KEY_OK) and not keydown(KEY_BACK): None
-    display()
+    dialog_close([KEY_OK, KEY_BACK])
 
 
 #######################################################
