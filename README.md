@@ -7,7 +7,7 @@ Python script for the scientific Numworks calculator, enabling to type in RPN in
 - [Toolbox] key allows the user to display some other hotkeys, including RPN-specific functions as LastX, OVER, ROLL, SWAP, DUPlicate, …
 - [var] key shows functionalities mapped to [alpha]+{key}: prime factorisation, statistics, random, converting (degrees/radians, Fahrenheit/Celsius), random, …
 
-![nw-rpn_hotkeys](https://github.com/user-attachments/assets/844d718f-ada6-4167-80ac-2a7fe744cdc9)
+![rpn-menu](https://github.com/user-attachments/assets/2ff43ce5-e219-4213-acac-36be5bc372fd)
 
 
 A remark for the [(] key, which emulates [R↓] of HP calculators:
@@ -34,11 +34,7 @@ Here are a few ideas for future improvements:
 - [(] may not ROLL, raising a ValueError if incorrect syntax on the command line
 - with huge numbers, python_int() raises an OverflowError, cannot converting inf to int
 
-**Keys remapping**
-- inverse on [shift] + [÷] and change signs on [shift] + [−] to allow for complex numbers and vectors in the future
-
 **GUI Updates**
-- typing `e` should add a `1` before on the entry command line (cf. HP 15C)
 - error dialogs instead of nothing happening for e.g. factorial of non natural number
 - statistics displayed “fullscreen” instead of inside a dialogbox.
 - when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
