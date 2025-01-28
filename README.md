@@ -34,7 +34,11 @@ Here are a few ideas for future improvements:
 - [(] may not ROLL, raising a ValueError if incorrect syntax on the command line
 - with huge numbers, python_int() raises an OverflowError, cannot converting inf to int
 
+**Keys remapping**
+- inverse on [shift] + [÷] and change signs on [shift] + [−] to allow for complex numbers and vectors in the future
+
 **GUI Updates**
+- typing `e` should add a `1` before on the entry command line (cf. HP 15C)
 - error dialogs instead of nothing happening for e.g. factorial of non natural number
 - statistics displayed “fullscreen” instead of inside a dialogbox.
 - when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
@@ -43,10 +47,12 @@ Here are a few ideas for future improvements:
 
 **Features**
 - study the possibility of *setting* angles to degrees/radians instead of *converting*
-- Level selection in dynamic mode: n ROLL
+- level selection in dynamic mode: n ROLL
 - interactive “clickable” menus
-- (then) [%] menu with proportion, evolution, and so on (cf. HP 12C)
-- Settings: switch between fixed number of d.p., scientific notation, and so on
+- (then) [%] menu with %, Δ%, %T, MG%P, MG%C (cf. HP 12C & 19B II)
+- settings: switch between fixed number of d.p., scientific notation, and so on
+- arithmetics on [A]: gcd, lcm, prime division, combinatics, and so on
+- time calculations between dates dd.mmyyyy on [T] (cf. HP 12C and others)
 - conversion tool on [STO→]
 - vectors? (with `[` and `]`): add, substract, scalar multiplication, norm (with `[N]`), dot product, cross product, determinant?…
 - complex numbers? (with `(` and `)`) (cf. HP 28S)
