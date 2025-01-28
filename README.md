@@ -32,13 +32,13 @@ Here are a few ideas for future improvements:
 
 **GUI Updates**
 - statistics displayed “fullscreen” instead of inside a dialogbox.
+- level selection in dynamic mode: n ROLL
 - when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
 - display large numbers as approximations instead of overflowing to the left (max: 27 digits)
 - add a narrow no-break space every 3 digits from right
 
 **Features**
 - study the possibility of *setting* angles to degrees/radians instead of *converting*
-- level selection in dynamic mode: n ROLL
 - interactive “clickable” menus
 - (then) [%] menu with %, Δ%, %T, MG%P, MG%C (cf. HP 12C & 19B II)
 - settings: switch between fixed number of d.p., scientific notation, and so on
