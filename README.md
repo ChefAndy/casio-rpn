@@ -31,7 +31,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for future improvements:
 
 **Bugfix**
-- [(] may not ROLL, raising a ValueError if incorrect syntax on the command line
 - with huge numbers, python_int() raises an OverflowError, cannot converting inf to int
 
 **GUI Updates**
