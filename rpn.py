@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-28 T 16:15 UTC+1"
+__version__ = "2025-01-28 T 16:23 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, ceil
@@ -399,6 +399,8 @@ while True:
                 entry = ""
                 if pos == int(pos) and int(pos) <= len(stack):
                     stack.insert(int(pos-1), stack.pop(0))
+                else:
+                    error("invalid stack level number")
         elif len(stack) >= 2: stack.append(stack.pop(0))
         display()
     elif keydown(KEY_RIGHTPARENTHESIS):  # SWAP
@@ -486,6 +488,7 @@ while True:
                         entry = ""
                         if pos == int(pos) and int(pos) <= len(stack):
                             stack.insert(0, stack.pop(int(pos)-1))
+                        else: error("invalid stack level number")
                 elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True
                 display()
