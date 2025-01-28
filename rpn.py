@@ -1,5 +1,5 @@
-__author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-24 T 11:50:00 UTC+1"
+__author__ = "Alexandre ANDRÉ"
+__version__ = "2025-01-28 T 11:23:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -236,7 +236,13 @@ def dialog_close(keys):
 
 def toolbox():
     """Display a dialog with common RPN functions and their mappings."""
-    keys = ["xnt", " (", " )", "Ans", "[s]+Ans", " i", " ,"]
+    keys = [" xnt",
+            "  (",
+            "  )",
+            " Ans",
+            "[shift]Ans",
+            "[shift] ÷",
+            "[shift] -"]
     desc = ["Fixed/dynamic stack",
             "ROLL (n)/all levels",
             "SWAP last two levels",
@@ -330,7 +336,10 @@ while True:
         if not entry: entry = "0."
         else: entry += "."
         display()
-    elif keydown(KEY_EE): entry += "e"; display()
+    elif keydown(KEY_EE):
+        if not entry: entry = "1e"
+        else: entry += "e";
+        display()
     elif keydown(KEY_PI) and not entry: push(pi); display()
 
     # RPN-specific
@@ -414,9 +423,7 @@ while True:
     elif keydown(KEY_COSINE): evaluate1(lambda x: cos(x))
     elif keydown(KEY_TANGENT): evaluate1(lambda x: tan(x))
     elif keydown(KEY_SQRT): evaluate1(lambda x: sqrt(x))
-    elif keydown(KEY_SQUARE): evaluate1(lambda x: x * x)
-    elif keydown(KEY_IMAGINARY): evaluate1(lambda x: 1 / x)
-    elif keydown(KEY_COMMA): evaluate1(lambda x: -x)
+    elif keydown(KEY_SQUARE): evaluate1(lambda x: x*x)
 
     # Binary operators
     elif keydown(KEY_PLUS): evaluate2(lambda x, y: x + y)
@@ -433,6 +440,12 @@ while True:
         draw_string("shift", 270, 0, WHITE, YELLOW)
         sleep(0.2)
         while not pressed:
+            if keydown(KEY_BACKSPACE):  # CLEAR
+                if fixed: stack = [0, 0, 0, 0]
+                else: stack = []
+                entry = ""
+                pressed = True
+                display()
             if keydown(KEY_SINE):
                 evaluate1(lambda x: asin(x))
                 pressed = True
@@ -451,12 +464,12 @@ while True:
                 elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True
                 display()
-            if keydown(KEY_BACKSPACE):  # CLEAR
-                if fixed: stack = [0, 0, 0, 0]
-                else: stack = []
-                entry = ""
+            if keydown(KEY_DIVISION):
+                evaluate1(lambda x: 1/x)
                 pressed = True
-                display()
+            if keydown(KEY_MINUS):
+                evaluate1(lambda x: -x)
+                pressed = True
             if keydown(KEY_ANS):  # OVER
                 if fixed or len(stack) >= 2: push(stack[1])
                 pressed = True
@@ -471,26 +484,20 @@ while True:
         draw_string("alpha", 270, 0, WHITE, YELLOW)
         sleep(0.2)
         while not pressed:
-            if keydown(KEY_DOT):  # !: factorial
-                evaluate1(lambda x: factorial(int(x)))
-                pressed = True
             if keydown(KEY_BACKSPACE):  # %: proportion of
                 evaluate2(lambda x, y: x*y / 100)
-                pressed = True
-            if keydown(KEY_COSINE):  # H: dec to HH:MM
-                evaluate1(lambda x: hms(x))
-                pressed = True
-            if keydown(KEY_IMAGINARY):  # D: radians to degrees
-                evaluate1(lambda x: degrees(x))
-                pressed = True
-            if keydown(KEY_FOUR):  # R: degrees to radians
-                evaluate1(lambda x: radians(x))
                 pressed = True
             if keydown(KEY_LOG):  # C: Fahrenheit to Celsius
                 evaluate1(lambda x: (x-32) * 5/9)
                 pressed = True
+            if keydown(KEY_IMAGINARY):  # D: radians to degrees
+                evaluate1(lambda x: degrees(x))
+                pressed = True
             if keydown(KEY_POWER):  # F: Celsius to Fahrenheit
                 evaluate1(lambda x: x * 9/5 + 32)
+                pressed = True
+            if keydown(KEY_COSINE):  # H: dec to HH:MM
+                evaluate1(lambda x: hms(x))
                 pressed = True
             if keydown(KEY_LEFTPARENTHESIS):  # P: Prime factorisation
                 if not entry and stack: push(prime_facto(int(stack[0])))
@@ -500,6 +507,9 @@ while True:
                     entry = ""
                 pressed = True
                 display()
+            if keydown(KEY_FOUR):  # R: degrees to radians
+                evaluate1(lambda x: radians(x))
+                pressed = True
             if keydown(KEY_FIVE):  # S: Statistics
                 pressed = True
                 if not fixed and len(stack) >= 2:
@@ -509,6 +519,9 @@ while True:
                 if not entry: push(random())
                 pressed = True
                 display()
+            if keydown(KEY_DOT):  # !: factorial
+                evaluate1(lambda x: factorial(int(x)))
+                pressed = True
             if keydown(KEY_ALPHA):  # Quit alpha mode
                 pressed = True
                 display()
