@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-28 T 13:23:00 UTC+1"
+__version__ = "2025-01-28 T 13:26:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -519,6 +519,9 @@ while True:
                 if not fixed and len(stack) >= 2:
                     statistics()
                 display()
+            if keydown(KEY_DIVISION):  # V: version (date)
+                pressed = True
+                error(__version__)
             if keydown(KEY_ZERO):  # ?: Random number in [0;1[
                 if not entry: push(random())
                 pressed = True
