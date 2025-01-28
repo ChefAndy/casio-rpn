@@ -1,8 +1,8 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-28 T 13:33 UTC+1"
+__version__ = "2025-01-28 T 16:15 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
-from math import degrees, radians, factorial, ceil
+from math import degrees, radians, ceil
 from time import sleep, monotonic
 from random import random
 
@@ -113,6 +113,18 @@ def evaluate2(operation):
 # Mathematical functions mapped to some keys or used in dialogs #
 #################################################################
 
+def factorial(n):
+    """Compute the factorial of n, for positive whole numbers."""
+    if float(n) != int(n):
+        raise Exception("math domain error")
+    else:
+        prod = 1
+        max = n
+        while max > 0:
+            prod *= max
+            max -= 1
+        return prod
+
 def hms(dec):
     """Convert decimal time in hours to sexagesimal format."""
     hours = int(dec)
@@ -122,11 +134,14 @@ def hms(dec):
 
 def prime_facto(n):
     """Find the lowest prime divisor of a natural number n."""
-    div = 2
-    while div**2 <= n:
-        if n % div == 0: return div
-        div += 1
-    return 1
+    if float(n) != int(n):
+        raise Exception("math domain error")
+    else:
+        div = 2
+        while div**2 <= n:
+            if n % div == 0: return div
+            div += 1
+        return 1
 
 def med(data):
     """Determine the median of a list of numbers."""
@@ -372,6 +387,10 @@ while True:
         if entry: push(entry); entry = ""  # ENTER
         elif stack: dup = stack[0]; push(dup)  # DUP
         display()
+    elif keydown(KEY_BACKSPACE):
+        if not entry and stack: drop()  # DROP stack top level
+        else: entry = entry[:-1]  # CLEAR last character on command line
+        display()
     elif keydown(KEY_LEFTPARENTHESIS):  # (n) ROLL down
         if entry:
             try: pos = float(entry)
@@ -391,17 +410,13 @@ while True:
             stack[0] = stack[1]
             stack[1] = swap
         display()
-    elif keydown(KEY_BACKSPACE):
-        if not entry and stack: drop()  # DROP stack top level
-        else: entry = entry[:-1]  # CLEAR last character on command line
-        display()
     elif keydown(KEY_UP):  # Selection of levels if stack is dynamic
         if not fixed and stack:
             level = 0
             selected(level)
             sleep(0.2)
             while level >= 0:
-                if keydown(KEY_UP) and level < len(stack)-1:
+                if keydown(KEY_UP) and level < len(stack) - 1:
                     level += 1
                     display()
                     selected(level)
@@ -409,11 +424,11 @@ while True:
                     level -= 1
                     display()
                     selected(level)
-                # DROPs first levels
+                # DROP first levels
                 if keydown(KEY_BACKSPACE):
                     stack = stack[level+1:]
                     level = -1
-                # PICKs actual level and copy to stack top
+                # PICK actual level and copy to stack top
                 if keydown(KEY_OK) or keydown(KEY_EXE):
                     stack[0] = stack[level]
                     level = -1
@@ -434,13 +449,13 @@ while True:
     elif keydown(KEY_SQUARE): evaluate1(lambda x: x*x)
 
     # Binary operators
+    elif keydown(KEY_POWER): evaluate2(lambda x, y: x ** y)
+    elif keydown(KEY_MULTIPLICATION): evaluate2(lambda x, y: x * y)
+    elif keydown(KEY_DIVISION): evaluate2(lambda x, y: x / y)
     elif keydown(KEY_PLUS): evaluate2(lambda x, y: x + y)
     elif keydown(KEY_MINUS):
         if entry and entry[-1] == "e" and entry.count("-") == 0: entry += "-"
         else: evaluate2(lambda x, y: x - y)
-    elif keydown(KEY_MULTIPLICATION): evaluate2(lambda x, y: x * y)
-    elif keydown(KEY_DIVISION): evaluate2(lambda x, y: x / y)
-    elif keydown(KEY_POWER): evaluate2(lambda x, y: x ** y)
 
     # SHIFT operators
     elif keydown(KEY_SHIFT):
@@ -506,15 +521,20 @@ while True:
             if keydown(KEY_POWER):  # F: Celsius to Fahrenheit
                 evaluate1(lambda x: x * 9/5 + 32)
                 pressed = True
-            if keydown(KEY_COSINE):  # H: dec to HH:MM
+            if keydown(KEY_COSINE):  # H: dec to H:MMSS
                 evaluate1(lambda x: hms(x))
                 pressed = True
             if keydown(KEY_LEFTPARENTHESIS):  # P: Prime factorisation
-                if not entry and stack: push(prime_facto(int(stack[0])))
+                if not entry and stack:
+                    try: push(prime_facto(float(stack[0])))
+                    except Exception as message: error(message)
                 elif entry:
-                    push(int(entry))
-                    push(prime_facto(int(entry)))
-                    entry = ""
+                    if float(entry) != int(float(entry)):
+                        error("math domain error")
+                    else:
+                        push(float(entry))
+                        push(prime_facto(float(entry)))
+                        entry = ""
                 pressed = True
                 display()
             if keydown(KEY_FOUR):  # R: degrees to radians
@@ -533,7 +553,7 @@ while True:
                 pressed = True
                 display()
             if keydown(KEY_DOT):  # !: factorial
-                evaluate1(lambda x: factorial(int(x)))
+                evaluate1(lambda x: factorial(x))
                 pressed = True
             if keydown(KEY_ALPHA):  # Quit alpha mode
                 pressed = True
