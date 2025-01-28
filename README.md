@@ -30,9 +30,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 ### Roadmap
 Here are a few ideas for future improvements:
 
-**Bugfix**
-- with huge numbers, python_int() raises an OverflowError, cannot converting inf to int
-
 **GUI Updates**
 - error dialogs instead of nothing happening for e.g. factorial of non natural number
 - statistics displayed “fullscreen” instead of inside a dialogbox.
