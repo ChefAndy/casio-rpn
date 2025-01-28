@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-28 T 11:23:00 UTC+1"
+__version__ = "2025-01-28 T 13:23:00 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -368,10 +368,12 @@ while True:
         display()
     elif keydown(KEY_LEFTPARENTHESIS):  # (n) ROLL down
         if entry:
-            pos = float(entry)
-            entry = ""
-            if pos == int(pos) and int(pos) <= len(stack):
-                stack.insert(int(pos-1), stack.pop(0))
+            try: pos = float(entry)
+            except Exception as message: error(message)
+            else:
+                entry = ""
+                if pos == int(pos) and int(pos) <= len(stack):
+                    stack.insert(int(pos-1), stack.pop(0))
         elif len(stack) >= 2: stack.append(stack.pop(0))
         display()
     elif keydown(KEY_RIGHTPARENTHESIS):  # SWAP
@@ -457,10 +459,12 @@ while True:
                 pressed = True
             if keydown(KEY_LEFTPARENTHESIS):  # ROLL up
                 if entry:
-                    pos = float(entry)
-                    entry = ""
-                    if pos == int(pos) and int(pos) <= len(stack):
-                        stack.insert(0, stack.pop(int(pos)-1))
+                    try: pos = float(entry)
+                    except Exception as message: error(message)
+                    else:
+                        entry = ""
+                        if pos == int(pos) and int(pos) <= len(stack):
+                            stack.insert(0, stack.pop(int(pos)-1))
                 elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True
                 display()
