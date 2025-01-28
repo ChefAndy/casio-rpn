@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-28 T 13:26:00 UTC+1"
+__version__ = "2025-01-28 T 13:33 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, factorial, ceil
@@ -48,8 +48,14 @@ entry = ""
 def python_int(foo):
     """Python-specific: keep integers instead of floats if possible."""
     foo = float(foo)
-    if foo == int(foo): foo = int(foo)
-    return foo
+    try:
+        integer = int(foo)
+    except OverflowError as message:
+        error(message)
+    else:
+        if foo == integer:
+            foo = integer
+        return foo
 
 def drop():
     """Drop the stack top level, keep T level value if fixed stack mode."""
