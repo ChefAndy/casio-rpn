@@ -31,7 +31,6 @@ On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
 Here are a few ideas for future improvements:
 
 **GUI Updates**
-- error dialogs instead of nothing happening for e.g. factorial of non natural number
 - statistics displayed “fullscreen” instead of inside a dialogbox.
 - when selecting a level in dynamic mode: `…` submenu for PICK, DROP, (and n ROLL?)
 - display large numbers as approximations instead of overflowing to the left (max: 27 digits)
