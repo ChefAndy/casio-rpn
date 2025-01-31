@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-28 T 16:23 UTC+1"
+__version__ = "2025-01-31 T 16:28 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, ceil
@@ -20,6 +20,8 @@ mp.kbd_intr(-1)  # Disable KeyboardInterrupt
 XMAX = 320
 YMAX = 222
 
+BOX_WIDTH = 266
+
 BLACK = color(0, 0, 0)
 MGREY = color(164, 165, 164)
 DGREY = color(180, 180, 180)
@@ -29,7 +31,10 @@ WHITE = color(255, 254, 255)
 LBLUE = color(245, 250, 255)
 YELLOW = color(255, 181, 0)
 
+SELECT_BG = color(214, 213, 231)
+
 SEPARATOR = color(223, 217, 222)
+
 TITLE_BG = color(108, 99, 115)
 TITLE_BORDER = color(65, 64, 65)
 
@@ -51,7 +56,7 @@ def python_int(foo):
     try:
         integer = int(foo)
     except OverflowError as message:
-        error(message)
+        draw_error(message)
     else:
         if foo == integer:
             foo = integer
@@ -65,7 +70,7 @@ def drop():
 def push(foo):
     """Push something onto the stack."""
     try: top = python_int(foo)
-    except Exception as message: error(message)
+    except Exception as message: draw_error(message)
     else:
         global lastx
         lastx = foo
@@ -76,13 +81,13 @@ def evaluate1(operation):
     global entry, stack, lastx
     if not entry and stack:
         try: result = operation(stack[0])
-        except Exception as message: error(message)
+        except Exception as message: draw_error(message)
         else:
             lastx = stack[0]
             stack[0] = python_int(result)
     elif entry:
         try: result = operation(float(entry))
-        except Exception as message: error(message)
+        except Exception as message: draw_error(message)
         else:
             lastx = entry
             stack.insert(0, python_int(result))
@@ -94,14 +99,14 @@ def evaluate2(operation):
     global entry, stack, lastx
     if not entry and len(stack) >= 2:
         try: result = operation(stack[1], stack[0])
-        except Exception as message: error(message)
+        except Exception as message: draw_error(message)
         else:
             lastx = stack[0]
             stack[1] = python_int(result)
             drop()
     elif entry and stack:
         try: result = operation(stack[0], float(entry))
-        except Exception as message: error(message)
+        except Exception as message: draw_error(message)
         else:
             lastx = entry
             stack[0] = python_int(result)
@@ -202,58 +207,87 @@ def display():
     draw_string(entry, 5, y, BLACK, WHITE)
     sleep(0.2)
 
+
 def blink_cursor():
     x = 5 + 10*len(entry)
     y = YMAX - 24 if not fixed else YMAX - 31
     color = BLACK if int(monotonic()) % 2 == 0 else WHITE
     fill_rect(x, y, 1, 18, color)
 
-def selected(level):
+
+def select_stack(level):
     """Highlight selected stack level, if any."""
-    if fixed: levels = 4; shift = 13
-    else: levels = 8; shift = 3
-    h = YMAX // (levels+1)
+    h = YMAX // 9
     x = 310 - 10 * len(str(stack[level]))
-    y = h * (levels-1-level) + shift
-    draw_string(str(stack[level]), x, y, (138,141,139), (214,213,231))
+    y = h * (7 - level) + (h - 18) // 2
+    draw_string(str(stack[level]), x, y, BLACK, SELECT_BG)
 
 
-def error(text):
+def draw_error(text):
     """Display an error or exception in a black dialog box."""
     text = str(text)
     width = 10*len(text) + 32
     x = (XMAX - width) // 2
     fill_rect(x, 89, width, 44, BLACK)
     draw_string(text, x + 16, 102, WHITE, BLACK)
-    dialog_close([key for key in range(53)])
-
-
-def dialog_title(text):
-    """Draw the title bar for a dialog box, string text centered."""
-    fill_rect(27, 27, 266, 21, TITLE_BORDER)
-    fill_rect(28, 28, 264, 19, TITLE_BG)
-    x = (XMAX - 10*len(text)) // 2
-    draw_string(text, x, 28, WHITE, TITLE_BG)
-
-def dialog_contents(items, descriptions):
-    """Display items and their descriptions on lines inside a dialog box."""
-    fill_rect(27, 48, 266, 174, LGREY)
-    fill_rect(28, 49, 264, 173, WHITE)
-    for i in range(len(items)):
-        y = 50 + i * 174 // len(items)
-        draw_string(items[i], 35, y + 15//len(items))
-        x_desc = 285 - 10*len(descriptions[i])
-        draw_string(descriptions[i], x_desc, y + 15//len(items), MGREY, WHITE)
-        fill_rect(28, y - 2, 264, 1, LGREY)
-
-def dialog_close(keys):
-    """Close a dialog only when some keys are pressed."""
     sleep(0.5)
     pressed = False
     while not pressed:
-        for i in keys:
+        for i in range(53):
             if keydown(i): pressed = True
     display()
+
+
+def draw_item(line, items, descriptions, selected=False):
+    """Display a menu item line, eventually on a selected background."""
+    n = len(items)
+    h = 174 // n
+    y = 50 + line * h
+    y_txt = (h - 18) // 2
+    background = SELECT_BG if selected else WHITE
+    fill_rect(28, y - 1, 264, h - 1, background)
+    draw_string(items[line], 35, y + y_txt, BLACK, background)
+    x_desc = 285 - 10*len(descriptions[line])
+    draw_string(descriptions[line], x_desc, y + y_txt, MGREY, background)
+
+
+def draw_menu(items, descriptions):
+    """Display all items and descriptions menu inside a dialog box."""
+    fill_rect(27, 48, BOX_WIDTH, 174, LGREY)
+    fill_rect(28, 49, BOX_WIDTH - 2, 173, WHITE)
+    n = len(items)
+    h = 174 // n
+    for i in range(len(items)):
+        draw_item(i, items, descriptions)
+        y = 50 + i * h
+        fill_rect(28, y - 2, 264, 1, LGREY)
+    fill_rect(28, 48 + len(items) * h, 264, 1, LGREY)
+
+
+def varbox():
+    """Display a dialog with functions mapped to ALPHA + some key."""
+    keys = ["D", "R", "C", "F", "H", "P", "S", "?"]
+    desc = ["Convert rad to °",
+            "Convert ° to rad",
+            "Convert °F to °C",
+            "Convert °C to °F",
+            "Convert hrs to h:min",
+            "Prime factorisation",
+            "Statistics",
+            "Random number in [0,1)"]
+    fill_rect(27, 27, BOX_WIDTH, 21, TITLE_BORDER)
+    fill_rect(28, 28, BOX_WIDTH - 2, 19, TITLE_BG)
+    title = "Alpha shortcuts"
+    x = (XMAX - 10*len(title)) // 2
+    draw_string(title, x, 28, WHITE, TITLE_BG)
+    draw_menu(keys, desc)
+    sleep(0.5)
+    pressed = False
+    while not pressed:
+        for i in [KEY_OK, KEY_VAR, KEY_BACK]:
+            if keydown(i): pressed = True
+    display()
+
 
 def toolbox():
     """Display a dialog with common RPN functions and their mappings."""
@@ -271,25 +305,81 @@ def toolbox():
             "Copy 2nd level",
             "Inverse",
             "Change signs"]
-    dialog_title("Hotkeys")
-    dialog_contents(keys, desc)
-    dialog_close([KEY_OK, KEY_TOOLBOX, KEY_BACK])
+    fill_rect(27, 27, BOX_WIDTH, 21, TITLE_BORDER)
+    fill_rect(28, 28, BOX_WIDTH - 2, 19, TITLE_BG)
+    title = "Hotkeys"
+    x = (XMAX - 10*len(title)) // 2
+    draw_string(title, x, 28, WHITE, TITLE_BG)
+    draw_menu(keys, desc)
+    sleep(0.5)
+    pressed = False
+    while not pressed:
+        for i in [KEY_OK, KEY_TOOLBOX, KEY_BACK]:
+            if keydown(i): pressed = True
+    display()
 
 
-def varbox():
-    """Display a dialog with functions mapped to ALPHA + some key."""
-    keys = ["D", "R", "C", "F", "H", "P", "S", "?"]
-    desc = ["Convert rad to °",
-            "Convert ° to rad",
-            "Convert °F to °C",
-            "Convert °C to °F",
-            "Convert hrs to h:min",
-            "Prime factorisation",
-            "Statistics",
-            "Random number in [0,1)"]
-    dialog_title("Alpha shortcuts")
-    dialog_contents(keys, desc)
-    dialog_close([KEY_OK, KEY_VAR, KEY_BACK])
+def percentage():
+    """Display a dialog with common percentage functions."""
+    items = ["%", "Δ%", "%T", "±%", "MU%P"]
+    descriptions = ["Percentage of X",
+            "Percent difference",
+            "Percent of total",
+            "Evolution or markup",
+            "Markup on price"]
+    fill_rect(27, 27, BOX_WIDTH, 21, TITLE_BORDER)
+    fill_rect(28, 28, BOX_WIDTH - 2, 19, TITLE_BG)
+    title = "Percentage"
+    x = (XMAX - 10*len(title)) // 2
+    draw_string(title, x, 28, WHITE, TITLE_BG)
+    draw_menu(items, descriptions)
+    line = 0
+    quit = False
+    draw_item(0, items, descriptions, True)
+    while not quit:
+        sleep(0.13)
+        if keydown(KEY_UP) and line > 0:
+            draw_item(line, items, descriptions)
+            draw_item(line - 1, items, descriptions, True)
+            line -= 1
+        if keydown(KEY_DOWN) and line < len(items) - 1:
+            draw_item(line, items, descriptions)
+            draw_item(line + 1, items, descriptions, True)
+            line += 1
+        if keydown(KEY_OK) or keydown(KEY_EXE):
+            if line == 0:
+                if entry and stack:
+                    base = stack[0]
+                    evaluate2(lambda x, y: x*y / 100)
+                    push(base)
+                    stack[0], stack[1] = stack[1], stack[0]
+                elif not entry and len(stack) >= 2:
+                    base = stack[1]
+                    evaluate2(lambda x, y: x*y / 100)
+                    push(base)
+                    stack[0], stack[1] = stack[1], stack[0]
+            elif line == 1:
+                evaluate2(lambda x, y: (y - x) / x * 100)
+            elif line == 2:
+                if entry and stack:
+                    base = stack[0]
+                    evaluate2(lambda x, y: y/x * 100)
+                    push(base)
+                    stack[0], stack[1] = stack[1], stack[0]
+                elif not entry and len(stack) >= 2:
+                    base = stack[1]
+                    evaluate2(lambda x, y: y/x * 100)
+                    push(base)
+                    stack[0], stack[1] = stack[1], stack[0]
+            elif line == 3:
+                evaluate2(lambda x, y: x + x*y / 100)
+            elif line == 4:
+                evaluate2(lambda x, y: (y - x) / y * 100)
+            quit = True
+            display()
+        if keydown(KEY_BACK):
+            quit = True
+            display()
 
 
 def statistics():
@@ -314,10 +404,14 @@ def statistics():
             stdev(stack),
             len(stack),
             sum(stack)]
-    dialog_title("Statistics")
+    fill_rect(27, 27, BOX_WIDTH, 21, TITLE_BORDER)
+    fill_rect(28, 28, BOX_WIDTH - 2, 19, TITLE_BG)
+    title = "Statistics"
+    x = (XMAX - 10*len(title)) // 2
+    draw_string(title, x, 28, WHITE, TITLE_BG)
     # Dialog contents
-    fill_rect(27, 48, 266, 174, LGREY)
-    fill_rect(28, 49, 264, 173, WHITE)
+    fill_rect(27, 48, BOX_WIDTH, 174, LGREY)
+    fill_rect(28, 49, BOX_WIDTH - 2, 173, WHITE)
     # Line backgrounds
     for i in range(len(stat)):
         bg_color = LBLUE if i % 2 == 0 else WHITE
@@ -332,7 +426,12 @@ def statistics():
     # Separators for more convenient reading
     fill_rect(28, 49 + 19*5, 264, 1, DGREY)
     fill_rect(28, 49 + 19*7, 264, 1, DGREY)
-    dialog_close([KEY_OK, KEY_BACK])
+    sleep(0.5)
+    pressed = False
+    while not pressed:
+        for i in [KEY_OK, KEY_BACK]:
+            if keydown(i): pressed = True
+    display()
 
 
 #######################################################
@@ -381,7 +480,7 @@ while True:
     elif keydown(KEY_ANS):
         try:
             if entry: stack.insert(0, python_int(entry))  # LastX
-        except Exception as message: error(message)
+        except Exception as message: draw_error(message)
         else: push(lastx); display()
     elif keydown(KEY_EXE) or keydown(KEY_OK):
         if entry: push(entry); entry = ""  # ENTER
@@ -394,13 +493,13 @@ while True:
     elif keydown(KEY_LEFTPARENTHESIS):  # (n) ROLL down
         if entry:
             try: pos = float(entry)
-            except Exception as message: error(message)
+            except Exception as message: draw_error(message)
             else:
                 entry = ""
                 if pos == int(pos) and int(pos) <= len(stack):
                     stack.insert(int(pos-1), stack.pop(0))
                 else:
-                    error("invalid stack level number")
+                    draw_error("invalid stack level number")
         elif len(stack) >= 2: stack.append(stack.pop(0))
         display()
     elif keydown(KEY_RIGHTPARENTHESIS):  # SWAP
@@ -415,17 +514,17 @@ while True:
     elif keydown(KEY_UP):  # Selection of levels if stack is dynamic
         if not fixed and stack:
             level = 0
-            selected(level)
+            select_stack(level)
             sleep(0.2)
             while level >= 0:
                 if keydown(KEY_UP) and level < len(stack) - 1:
                     level += 1
                     display()
-                    selected(level)
+                    select_stack(level)
                 if keydown(KEY_DOWN):
                     level -= 1
                     display()
-                    selected(level)
+                    select_stack(level)
                 # DROP first levels
                 if keydown(KEY_BACKSPACE):
                     stack = stack[level+1:]
@@ -483,12 +582,12 @@ while True:
             if keydown(KEY_LEFTPARENTHESIS):  # ROLL up
                 if entry:
                     try: pos = float(entry)
-                    except Exception as message: error(message)
+                    except Exception as message: draw_error(message)
                     else:
                         entry = ""
                         if pos == int(pos) and int(pos) <= len(stack):
                             stack.insert(0, stack.pop(int(pos)-1))
-                        else: error("invalid stack level number")
+                        else: draw_error("invalid stack level number")
                 elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True
                 display()
@@ -512,9 +611,14 @@ while True:
         draw_string("alpha", 270, 0, WHITE, YELLOW)
         sleep(0.2)
         while not pressed:
-            if keydown(KEY_BACKSPACE):  # %: proportion of
-                evaluate2(lambda x, y: x*y / 100)
+            if keydown(KEY_HOME):
                 pressed = True
+                display()
+                draw_error(__version__)
+            if keydown(KEY_BACKSPACE):  # %: Percentage functions
+                pressed = True
+                display()
+                percentage()
             if keydown(KEY_LOG):  # C: Fahrenheit to Celsius
                 evaluate1(lambda x: (x-32) * 5/9)
                 pressed = True
@@ -530,10 +634,10 @@ while True:
             if keydown(KEY_LEFTPARENTHESIS):  # P: Prime factorisation
                 if not entry and stack:
                     try: push(prime_facto(float(stack[0])))
-                    except Exception as message: error(message)
+                    except Exception as message: draw_error(message)
                 elif entry:
                     if float(entry) != int(float(entry)):
-                        error("math domain error")
+                        draw_error("math domain error")
                     else:
                         push(float(entry))
                         push(prime_facto(float(entry)))
@@ -548,9 +652,6 @@ while True:
                 if not fixed and len(stack) >= 2:
                     statistics()
                 display()
-            if keydown(KEY_DIVISION):  # V: version (date)
-                pressed = True
-                error(__version__)
             if keydown(KEY_ZERO):  # ?: Random number in [0;1[
                 if not entry: push(random())
                 pressed = True
@@ -569,4 +670,4 @@ while True:
     blink_cursor()
 
     # Idle timeout before next infinite loop
-    sleep(0.07)
+    sleep(0.06)
