@@ -1,5 +1,5 @@
 __author__ = "Alexandre ANDRÉ"
-__version__ = "2025-01-31 T 16:28 UTC+1"
+__version__ = "2025-02-03 T 10:45 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, ceil
@@ -532,6 +532,10 @@ while True:
                 # PICK actual level and copy to stack top
                 if keydown(KEY_OK) or keydown(KEY_EXE):
                     stack[0] = stack[level]
+                    level = -1
+                # ROLL down from top level to selected level
+                if keydown(KEY_LEFTPARENTHESIS):
+                    stack.insert(int(level), stack.pop(0))
                     level = -1
                 # Exit selection mode
                 if keydown(KEY_BACK): level = -1
