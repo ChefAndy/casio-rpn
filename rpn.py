@@ -1,5 +1,5 @@
-__author__ = "Alexandre ANDRÉ"
-__version__ = "2025-02-03 T 10:45 UTC+1"
+__author__ = "Alexandre ANDRÉ"
+__version__ = "2025-02-04 T 16:33 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from math import degrees, radians, ceil
@@ -51,7 +51,7 @@ entry = ""
 #############################################################################
 
 def python_int(foo):
-    """Python-specific: keep integers instead of floats if possible."""
+    """Python-specific: keep integers instead of floats, if possible."""
     foo = float(foo)
     try:
         integer = int(foo)
@@ -195,11 +195,25 @@ def display():
     if not fixed and len(stack) >= 2: fill_rect(0, 6*h, XMAX, h, WHITE)
     # Display stack levels
     for line in range(len(stack)):
-        x_value = 310 - 10*len(str(stack[line]))
+        value = str(stack[line])
+        # Remove Python-specific trailing 000000001 if possible
+        if value.count(".") == 1 and value[-1] == "1":
+            zeros = 0; last = -2
+            while value[last] == "0": zeros += 1; last -= 1
+            if zeros >= 7: value = value[:last+1]
+        # Remove Python-specific trailing 9s if possible
+        if value.count(".") == 1 and value[-1] == "9":
+            nines = 9; last = -2
+            while value[last] == "9": nines += 1; last -= 1
+            if nines >= 7:
+                value = value[:last+1]
+                last_digit = int(value[-1]) + 1
+                value = value[:-1] + str(last_digit)
+        x_value = 310 - 10*len(value)
         y = h * (levels-1-line) + shift
         bg_color = LBLUE if line % 2 == 0 else WHITE
         draw_string(name[line], 10, y, BLACK, bg_color)
-        draw_string(str(stack[line]), x_value, y, BLACK, bg_color)
+        draw_string(value, x_value, y, BLACK, bg_color)
     # Entry command line
     fill_rect(0, levels*h, XMAX, 1, SEPARATOR)
     fill_rect(0, levels*h + 1, XMAX, YMAX - (levels-1)*h, WHITE)
