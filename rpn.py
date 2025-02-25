@@ -1,11 +1,10 @@
-__version__ = "2025-02-07 T 14:02 UTC+1"
+__version__ = "2025-02-25 T 15:39 UTC+1"
 
-from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
-from math import degrees, radians, ceil
+from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt, ceil
 from time import sleep, monotonic
 from random import random
 
-from ion import *
+from ion import keydown
 from kandinsky import draw_string, fill_rect
 
 from micropython import kbd_intr
@@ -207,7 +206,7 @@ def varbox():
     draw_menu(keys, desc)
     sleep(0.5); pressed = False
     while not pressed:
-        for i in (KEY_OK, KEY_VAR, KEY_BACK):
+        for i in (4, 5, 15):  # OK, BACK, VAR
             if keydown(i): pressed = True
     display()
 
@@ -222,7 +221,7 @@ def toolbox():
     draw_menu(keys, desc)
     sleep(0.5); pressed = False
     while not pressed:
-        for i in (KEY_OK, KEY_TOOLBOX, KEY_BACK):
+        for i in (4, 5, 16):  # OK, BACK, TOOLBOX
             if keydown(i): pressed = True
     display()
 
@@ -239,15 +238,15 @@ def percentage():
     draw_item(0, items, descriptions, True)
     while not quit:
         sleep(0.13)
-        if keydown(KEY_UP) and line > 0:
+        if keydown(1) and line > 0:  # UP
             draw_item(line, items, descriptions)
             draw_item(line - 1, items, descriptions, True)
             line -= 1
-        if keydown(KEY_DOWN) and line < len(items) - 1:
+        if keydown(2) and line < len(items) - 1:  # DOWN
             draw_item(line, items, descriptions)
             draw_item(line + 1, items, descriptions, True)
             line += 1
-        if keydown(KEY_OK) or keydown(KEY_EXE):
+        if keydown(4) or keydown(52):  # OK/EXE
             if line == 0:
                 if entry and stack:
                     base = stack[0]
@@ -274,7 +273,7 @@ def percentage():
             elif line == 3: evaluate2(lambda x, y: x + x*y / 100)
             elif line == 4: evaluate2(lambda x, y: (y-x) / y * 100)
             quit = True; display()
-        if keydown(KEY_BACK): quit = True; display()
+        if keydown(5): quit = True; display()  # BACK
 
 
 def statistics():
@@ -303,7 +302,7 @@ def statistics():
     fill_rect(28, 182, 264, 1, (180,180,180))
     sleep(0.5); pressed = False
     while not pressed:
-        for i in (KEY_OK, KEY_BACK):
+        for i in (4, 5):  # OK, BACK
             if keydown(i): pressed = True
     display()
 
@@ -318,28 +317,28 @@ display()
 while True:
 
     # Characters the user may enter on the command line
-    if keydown(KEY_ZERO): entry += "0"; display()
-    elif keydown(KEY_ONE): entry += "1"; display()
-    elif keydown(KEY_TWO): entry += "2"; display()
-    elif keydown(KEY_THREE): entry += "3"; display()
-    elif keydown(KEY_FOUR): entry += "4"; display()
-    elif keydown(KEY_FIVE): entry += "5"; display()
-    elif keydown(KEY_SIX): entry += "6"; display()
-    elif keydown(KEY_SEVEN): entry += "7"; display()
-    elif keydown(KEY_EIGHT): entry += "8"; display()
-    elif keydown(KEY_NINE): entry += "9"; display()
-    elif keydown(KEY_DOT):
+    if keydown(48): entry += "0"; display()
+    elif keydown(42): entry += "1"; display()
+    elif keydown(43): entry += "2"; display()
+    elif keydown(44): entry += "3"; display()
+    elif keydown(36): entry += "4"; display()
+    elif keydown(37): entry += "5"; display()
+    elif keydown(38): entry += "6"; display()
+    elif keydown(30): entry += "7"; display()
+    elif keydown(31): entry += "8"; display()
+    elif keydown(32): entry += "9"; display()
+    elif keydown(49):
         if not entry: entry = "0."
         else: entry += "."
         display()
-    elif keydown(KEY_EE):
+    elif keydown(50):
         if not entry: entry = "1e"
         else: entry += "e";
         display()
-    elif keydown(KEY_PI) and not entry: push(pi); display()
+    elif keydown(27) and not entry: push(pi); display()
 
     # RPN-specific
-    elif keydown(KEY_XNT):
+    elif keydown(14):  # XNT
         fixed = not fixed  # Switch between fixed or dynamic stack
         if fixed:  # Max 4 levels, equal to 0 if not used
             for level in range(4, len(stack)): stack.pop()
@@ -349,20 +348,20 @@ while True:
                 stack.pop()
                 if stack == [0]: stack = []; break
         display()
-    elif keydown(KEY_ANS):
+    elif keydown(51):  # Ans
         try:
             if entry: stack.insert(0, python_int(entry))  # LastX
         except Exception as message: draw_error(message)
         else: push(lastx); display()
-    elif keydown(KEY_EXE) or keydown(KEY_OK):
+    elif keydown(4) or keydown(52):  # OK/EXE
         if entry: push(entry); entry = ""  # ENTER
         elif stack: push(stack[0])  # DUP
         display()
-    elif keydown(KEY_BACKSPACE):
+    elif keydown(17):  # BACKSPACE
         if not entry and stack: drop()  # DROP stack top level
         else: entry = entry[:-1]  # CLEAR last character on command line
         display()
-    elif keydown(KEY_LEFTPARENTHESIS):  # (n) ROLL down
+    elif keydown(33):  # (: (n) ROLL down
         if entry:
             try: pos = float(entry)
             except Exception as message: draw_error(message)
@@ -374,59 +373,59 @@ while True:
                     draw_error("invalid stack level number")
         elif len(stack) >= 2: stack.append(stack.pop(0))
         display()
-    elif keydown(KEY_RIGHTPARENTHESIS):  # SWAP
+    elif keydown(34):  # ): SWAP
         if entry: push(entry); entry = ""
         if len(stack) >= 2: stack[0], stack[1] = stack[1], stack[0]
         display()
-    elif keydown(KEY_UP):  # Selection of levels if stack is dynamic
+    elif keydown(1):  # UP: selection of levels if stack is dynamic
         if not fixed and stack:
             level = 0; select_stack(level); sleep(0.2)
             while level >= 0:
-                if keydown(KEY_UP) and level < len(stack) - 1:
+                if keydown(1) and level < len(stack) - 1:  # UP
                     level += 1; display(); select_stack(level)
-                if keydown(KEY_DOWN):
+                if keydown(2):  # DOWN
                     level -= 1; display(); select_stack(level)
-                if keydown(KEY_BACKSPACE):  # DROP
+                if keydown(17):  # BACKSPACE: DROP
                     stack = stack[level+1:]; level = -1
-                if keydown(KEY_OK) or keydown(KEY_EXE):  # PICK
+                if keydown(4) or keydown(52):  # OK/EXE: PICK
                     stack[0] = stack[level]; level = -1
-                if keydown(KEY_LEFTPARENTHESIS):  # ROLL down
+                if keydown(33):  # (: ROLL down
                     stack.insert(int(level), stack.pop(0)); level = -1
-                if keydown(KEY_BACK): level = -1  # Exit selection mode
+                if keydown(5): level = -1  # BACK: exit selection mode
             display()
 
     # Unary operators
-    elif keydown(KEY_EXP):
+    elif keydown(18):
         if not entry and not stack: push(exp(1)); display()
         else: evaluate1(lambda x: exp(x))
-    elif keydown(KEY_LN): evaluate1(lambda x: log(x))
-    elif keydown(KEY_LOG): evaluate1(lambda x: log10(x))
-    elif keydown(KEY_SINE): evaluate1(lambda x: sin(x))
-    elif keydown(KEY_COSINE): evaluate1(lambda x: cos(x))
-    elif keydown(KEY_TANGENT): evaluate1(lambda x: tan(x))
-    elif keydown(KEY_SQRT): evaluate1(lambda x: sqrt(x))
-    elif keydown(KEY_SQUARE): evaluate1(lambda x: x*x)
+    elif keydown(19): evaluate1(lambda x: log(x))
+    elif keydown(20): evaluate1(lambda x: log10(x))
+    elif keydown(24): evaluate1(lambda x: sin(x))
+    elif keydown(25): evaluate1(lambda x: cos(x))
+    elif keydown(26): evaluate1(lambda x: tan(x))
+    elif keydown(28): evaluate1(lambda x: sqrt(x))
+    elif keydown(29): evaluate1(lambda x: x*x)
 
     # Binary operators
-    elif keydown(KEY_POWER): evaluate2(lambda x, y: x ** y)
-    elif keydown(KEY_MULTIPLICATION): evaluate2(lambda x, y: x * y)
-    elif keydown(KEY_DIVISION): evaluate2(lambda x, y: x / y)
-    elif keydown(KEY_PLUS): evaluate2(lambda x, y: x + y)
-    elif keydown(KEY_MINUS):
+    elif keydown(23): evaluate2(lambda x, y: x ** y)
+    elif keydown(39): evaluate2(lambda x, y: x * y)
+    elif keydown(40): evaluate2(lambda x, y: x / y)
+    elif keydown(45): evaluate2(lambda x, y: x + y)
+    elif keydown(46):
         if entry and entry[-1] == "e" and entry.count("-") == 0: entry += "-"
         else: evaluate2(lambda x, y: x - y)
 
     # SHIFT operators
-    elif keydown(KEY_SHIFT):
+    elif keydown(12):  # SHIFT
         pressed = False; draw_string("shift", 270, 0, (255,254,255), (255,181,0)); sleep(0.2)
         while not pressed:
-            if keydown(KEY_BACKSPACE):  # CLEAR
+            if keydown(17):  # BACKSPACE: CLEAR
                 stack = [0, 0, 0, 0] if fixed else []
                 entry = ""; pressed = True; display()
-            if keydown(KEY_SINE): evaluate1(lambda x: asin(x)); pressed = True
-            if keydown(KEY_COSINE): evaluate1(lambda x: acos(x)); pressed = True
-            if keydown(KEY_TANGENT): evaluate1(lambda x: atan(x)); pressed = True
-            if keydown(KEY_LEFTPARENTHESIS):  # ROLL up
+            if keydown(24): evaluate1(lambda x: asin(x)); pressed = True
+            if keydown(25): evaluate1(lambda x: acos(x)); pressed = True
+            if keydown(26): evaluate1(lambda x: atan(x)); pressed = True
+            if keydown(33):  # (: ROLL up
                 if entry:
                     try: pos = float(entry)
                     except Exception as message: draw_error(message)
@@ -437,30 +436,30 @@ while True:
                         else: draw_error("invalid stack level number")
                 elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True; display()
-            if keydown(KEY_DIVISION): evaluate1(lambda x: 1/x); pressed = True
-            if keydown(KEY_MINUS): evaluate1(lambda x: -x); pressed = True
-            if keydown(KEY_ANS):  # OVER
+            if keydown(40): evaluate1(lambda x: 1/x); pressed = True  # DIVISION
+            if keydown(46): evaluate1(lambda x: -x); pressed = True  # MINUS
+            if keydown(51):  # Ans: OVER
                 if fixed or len(stack) >= 2: push(stack[1])
                 pressed = True; display()
-            if keydown(KEY_SHIFT): pressed = True; display()
+            if keydown(12): pressed = True; display()  # SHIFT
 
     # ALPHA operators
-    elif keydown(KEY_ALPHA):
+    elif keydown(13):  # ALPHA
         pressed = False; draw_string("alpha", 270, 0, (255,254,255), (255,181,0)); sleep(0.2)
         while not pressed:
-            if keydown(KEY_HOME):
+            if keydown(6):  # HOME
                 pressed = True; display(); draw_error(__version__)
-            if keydown(KEY_BACKSPACE):  # %: Percentage functions
+            if keydown(17):  # %: Percentage functions
                 pressed = True; display(); percentage()
-            if keydown(KEY_LOG):  # C: Fahrenheit to Celsius
+            if keydown(20):  # C: Fahrenheit to Celsius
                 evaluate1(lambda x: (x-32) * 5/9); pressed = True
-            if keydown(KEY_IMAGINARY):  # D: radians to degrees
-                evaluate1(lambda x: degrees(x)); pressed = True
-            if keydown(KEY_POWER):  # F: Celsius to Fahrenheit
+            if keydown(21):  # D: radians to degrees
+                evaluate1(lambda x: x * 180 / pi); pressed = True
+            if keydown(23):  # F: Celsius to Fahrenheit
                 evaluate1(lambda x: x * 9/5 + 32); pressed = True
-            if keydown(KEY_COSINE):
+            if keydown(25):  # H
                 evaluate1(lambda x: hms(x)); pressed = True
-            if keydown(KEY_LEFTPARENTHESIS):  # P: Prime factorisation
+            if keydown(33):  # P: Prime factorisation
                 if not entry and stack:
                     try: push(prime_facto(float(stack[0])))
                     except Exception as message: draw_error(message)
@@ -468,21 +467,21 @@ while True:
                     if float(entry) != int(float(entry)): draw_error("math domain error")
                     else: push(float(entry)); push(prime_facto(float(entry))); entry = ""
                 pressed = True; display()
-            if keydown(KEY_FOUR):
-                evaluate1(lambda x: radians(x)); pressed = True
-            if keydown(KEY_FIVE):  # S: Statistics
+            if keydown(36):  # R
+                evaluate1(lambda x: x * pi / 180); pressed = True
+            if keydown(37):  # S: Statistics
                 pressed = True
                 if not fixed and len(stack) >= 2: statistics()
                 display()
-            if keydown(KEY_ZERO):
+            if keydown(48):  # ?
                 if not entry: push(random())
                 pressed = True; display()
-            if keydown(KEY_DOT): evaluate1(lambda x: factorial(x)); pressed = True
-            if keydown(KEY_ALPHA): pressed = True; display()
+            if keydown(49): evaluate1(lambda x: factorial(x)); pressed = True
+            if keydown(13): pressed = True; display()  # ALPHA
 
-    elif keydown(KEY_TOOLBOX): toolbox()
-    elif keydown(KEY_VAR): varbox()
-    elif keydown(KEY_HOME): quit()
+    elif keydown(16): toolbox()
+    elif keydown(15): varbox()
+    elif keydown(6): quit()  # HOME
 
     blink_cursor()
 
