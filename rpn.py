@@ -1,6 +1,6 @@
-__version__ = "2025-02-25 T 15:39 UTC+1"
+__version__ = "2025-02-25 T 16:03 UTC+1"
 
-from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt, ceil
+from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from time import sleep, monotonic
 from random import random
 
@@ -103,21 +103,6 @@ def prime_facto(n):
             div += 1
         return 1
 
-def med(data):
-    s = sorted(data); n = len(s)
-    if n % 2 == 1: return s[n//2]
-    else: return (s[n//2 - 1] + s[n//2]) / 2
-
-def quartile(data, q):
-    s = sorted(data)
-    i = ceil(q/4 * len(s))
-    return s[i - 1]
-
-def stdev(s):
-    m = sum(s) / len(s); v = 0
-    for i in s: v += (i - m)**2
-    return sqrt(v / len(s))
-
 
 # GUI FUNCTIONS
 
@@ -198,8 +183,8 @@ def draw_menu(items, descriptions):
 
 def varbox():
     """Display a dialog with functions mapped to ALPHA + some key."""
-    keys = ("D", "R", "C", "F", "H", "P", "S", "?")
-    desc = ("Convert rad to °", "Convert ° to rad", "Convert °F to °C", "Convert °C to °F", "Convert hrs to h:min", "Prime factorisation", "Statistics", "Random number in [0,1)")
+    keys = ("D", "R", "C", "F", "H", "P", "?")
+    desc = ("Convert rad to °", "Convert ° to rad", "Convert °F to °C", "Convert °C to °F", "Convert hrs to h:min", "Prime factorisation", "Random number in [0,1)")
     fill_rect(27, 27, 266, 21, (65,64,65))
     fill_rect(28, 28, 264, 19, (108,99,115))
     draw_string("Alpha shortcuts", 85, 28, (255,254,255), (108,99,115))
@@ -274,37 +259,6 @@ def percentage():
             elif line == 4: evaluate2(lambda x, y: (y-x) / y * 100)
             quit = True; display()
         if keydown(5): quit = True; display()  # BACK
-
-
-def statistics():
-    """Display a dialog with statistic informations on stack values."""
-    desc = ("Minimum", "1st quartile", "Median", "3rd quartile", "Maximum", "Mean", "Std deviation", "Nb of data", "Sum of values")
-    stat = ("Min", "Q1", "Med", "Q3", "Max", "x", "σ", "n", "Σx")
-    values = (min(stack), quartile(stack,1), med(stack), quartile(stack,3), max(stack), sum(stack)/len(stack), stdev(stack), len(stack), sum(stack))
-    fill_rect(27, 27, 266, 21, (65,64,65))
-    fill_rect(28, 28, 266 - 2, 19, (108,99,115))
-    draw_string("Statistics", 110, 28, (255,254,255), (108,99,115))
-    # Dialog contents
-    fill_rect(27, 48, 266, 174, (238,238,238))
-    fill_rect(28, 49, 264, 173, (255,254,255))
-    # Line backgrounds
-    for i in range(len(stat)):
-        bg_color = (245,250,255) if i % 2 == 0 else (255,254,255)
-        y = 50 + 19*i
-        fill_rect(28, y - 1, 264, 19, bg_color)
-        draw_string(desc[i], 162 - 10*len(desc[i]), y, (0,0,0), bg_color)
-        draw_string(stat[i], 185 - 5*len(stat[i]), y, (180,180,180), bg_color)
-        draw_string(str(values[i])[0:8], 285 - 10*len(str(values[i])[0:8]), y, (0,0,0), bg_color)
-    # Workaround: draw a bar over x for the missing "mean" glyph
-    fill_rect(180, 148, 10, 1, (180,180,180))
-    # Separators for more convenient reading
-    fill_rect(28, 144, 264, 1, (180,180,180))
-    fill_rect(28, 182, 264, 1, (180,180,180))
-    sleep(0.5); pressed = False
-    while not pressed:
-        for i in (4, 5):  # OK, BACK
-            if keydown(i): pressed = True
-    display()
 
 
 # MAIN PROGRAM
@@ -469,10 +423,6 @@ while True:
                 pressed = True; display()
             if keydown(36):  # R
                 evaluate1(lambda x: x * pi / 180); pressed = True
-            if keydown(37):  # S: Statistics
-                pressed = True
-                if not fixed and len(stack) >= 2: statistics()
-                display()
             if keydown(48):  # ?
                 if not entry: push(random())
                 pressed = True; display()
