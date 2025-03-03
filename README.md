@@ -21,7 +21,7 @@ A remark for the [(] key, which emulates [R↓] of HP calculators:
 
 ### Two RPN stack variants
 On [x,n,t] key, the user may choose between two RPN variants:
-- either dynamic levels 1,2,3,… with infinite amount of inputs (default)
-- either X,Y,Z,T levels with dropping of oldest inputs, and T keeping its value
+- Dynamic levels 1,2,3,… with infinite amount of inputs (default)
+- Entry RPN with X,Y,Z,T levels, dropping oldest inputs and T keeping its value
 
 In dynamic mode, use the [↑] and [↓] arrows to select stack levels. When a level is selected, press [⌫] to DROP all levels from top down to the selected one, or press [OK] or [EXE] to PICK the value in the selected level and copy it on stack top instead of the actual value.
