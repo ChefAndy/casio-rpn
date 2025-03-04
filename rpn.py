@@ -1,4 +1,4 @@
-__version__ = "2025-02-25 T 16:03 UTC+1"
+__version__ = "2025-03-04 T 14:22 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from time import sleep, monotonic
@@ -25,7 +25,7 @@ def python_int(foo):
 
 def python_trailing(value):
     # Remove Python-specific trailing 000000001 if possible
-    if value.count(".") == 1 and value[-1] == "1":
+    if value.count(".") == 1 and (value[-1] == "1" or value[-1] == "2"):
         zeros = 0; last = -2
         while value[last] == "0": zeros += 1; last -= 1
         if zeros >= 7: value = value[:last+1]
@@ -43,10 +43,12 @@ def drop():
     stack.pop(0)
     if fixed: stack.append(stack[2])
 
-def push(foo):
+def push(foo, history=True):
     try: top = python_int(foo)
     except Exception as message: draw_error(message)
-    else: global lastx; lastx = foo; stack.insert(0, top)
+    else:
+        if history: global lastx; lastx = foo
+        stack.insert(0, top)
 
 def evaluate1(operation):
     """Evaluate unary operations."""
@@ -59,9 +61,10 @@ def evaluate1(operation):
         try: result = operation(float(entry))
         except Exception as message: draw_error(message)
         else: lastx = entry; stack.insert(0, python_int(result)); entry = ""
-    display()
+        draw_command(0)
+    draw_register(0, 0.2)
 
-def evaluate2(operation):
+def evaluate2(operation, refresh=True):
     """Evaluate binary operations."""
     global entry, stack, lastx
     if not entry and len(stack) >= 2:
@@ -72,7 +75,7 @@ def evaluate2(operation):
         try: result = operation(stack[0], float(entry))
         except Exception as message: draw_error(message)
         else: lastx = entry; stack[0] = python_int(result); entry = ""
-    display()
+    if refresh: display()
 
 
 # MATH FUNCTIONS
@@ -106,48 +109,51 @@ def prime_facto(n):
 
 # GUI FUNCTIONS
 
-def display():
-    """Refresh the whole screen."""
-    # Depending on stack style, nb of lines displayed, level names, text shift
+def draw_register(level, timeout=0, selected=False):
+    """Display the requested stack register on correct background and line height."""
     if fixed:
-        name = ("X:", "Y:", "Z:", "T:"); levels = 4; shift = 13
+        height = 46; name = ("X:", "Y:", "Z:", "T:")
     else:
-        name = ("1:", "2:", "3:", "4:", "5:", "6:", "7:", "8:"); levels = 8; shift = 3
-    # Height (pixels) of lines displayed (including stack and command line)
-    h = 222 // (levels+1)
+        height = 23; name = ("1:", "2:", "3:", "4:", "5:", "6:", "7:", "8:")
+    bg_color = (245,250,255) if level % 2 == 0 else (255,254,255)
+    bg_text = (214,213,231) if selected else bg_color
+    value = python_trailing(str(stack[level]))
+    y_text = 185 - (level+1)*height + (height - 18) // 2
+    fill_rect(0, 184 - (level+1)*height, 320, height, bg_color)
+    draw_string(name[level], 10, y_text, (0,0,0), bg_color)
+    draw_string(value, 310 - 10*len(value), y_text, (0,0,0), bg_text)
+    sleep(timeout)
+
+def draw_stack(depth=8, timeout=0):
+    """Refresh the first {depth} stack levels from stack top."""
+    if fixed: depth = 4
+    if depth > len(stack): depth = len(stack)
+    for level in range(depth):
+        draw_register(level)
+    sleep(timeout)
+
+def draw_command(timeout=0.2):
+    """Refresh the command line, bottom of the screen."""
+    fill_rect(0, 185, 320, 37, (255,254,255))
+    draw_string(entry, 5, 195, (0,0,0), (255,254,255))
+    blink_cursor(True)
+    sleep(timeout)
+
+def display(command_line=True):
+    """Refresh the whole screen: background, all stack levels, separator, and command line."""
+    fill_rect(0, 0, 320, 184, (245,250,255))
     # On fixed stack, drop oldest level if not displayable
-    if fixed and len(stack) > 4: stack.pop()
-    # Odd or even line backgrounds
-    fill_rect(0, 0, 320, 222, (245,250,255))
-    if fixed or len(stack) >= 8: fill_rect(0, 0, 320, h, (255,254,255))
-    if fixed or len(stack) >= 6: fill_rect(0, 2*h, 320, h, (255,254,255))
-    if not fixed and len(stack) >= 4: fill_rect(0, 4*h, 320, h, (255,254,255))
-    if not fixed and len(stack) >= 2: fill_rect(0, 6*h, 320, h, (255,254,255))
+    levels = 4 if fixed else 8
+    if fixed and len(stack) > levels: stack.pop()
     n = len(stack) if len(stack) < levels else levels
-    for line in range(n):
-        value = python_trailing(str(stack[line]))
-        # Display stack levels
-        y = h * (levels-1-line) + shift
-        bg_color = (245,250,255) if line % 2 == 0 else (255,254,255)
-        draw_string(name[line], 10, y, (0,0,0), bg_color)
-        draw_string(value, 310 - 10*len(value), y, (0,0,0), bg_color)
-    # Entry command line
-    fill_rect(0, h*levels, 320, 1, (223,217,222))
-    fill_rect(0, h*levels + 1, 320, 222 - h*(levels-1), (255,254,255))
-    y = 199 if not fixed else 192
-    draw_string(entry, 5, y, (0,0,0), (255,254,255))
-    sleep(0.2)
+    draw_stack(n)
+    fill_rect(0, 184, 320, 1, (223,217,222))
+    if command_line: draw_command()
+    else: sleep(0.2)
 
-
-def blink_cursor():
-    y = 198 if not fixed else 191
-    color = (0,0,0) if int(monotonic()) % 2 == 0 else (255,254,255)
-    fill_rect(5 + 10*len(entry), y, 1, 18, color)
-
-
-def select_stack(level):
-    """Highlight selected stack level, if any."""
-    draw_string(str(stack[level]), 310 - 10*len(str(stack[level])), 171 - 24*level, (0,0,0), (214,213,231))
+def blink_cursor(forced=False):
+    color = (0,0,0) if int(monotonic()) % 2 == 0 or forced else (255,254,255)
+    fill_rect(5 + 10*len(entry), 194, 1, 18, color)
 
 
 def draw_error(text):
@@ -158,7 +164,7 @@ def draw_error(text):
     while not pressed:
         for i in range(53):
             if keydown(i): pressed = True
-    display()
+    display(False)
 
 
 def draw_item(line, items, descriptions, selected=False):
@@ -168,7 +174,6 @@ def draw_item(line, items, descriptions, selected=False):
     fill_rect(28, 49 + h*line, 264, h - 1, bg_color)
     draw_string(items[line], 35, 41 + h*line + h // 2, (0,0,0), bg_color)
     draw_string(descriptions[line], 285 - 10*len(descriptions[line]), 41 + h*line + h // 2, (164,165,164), bg_color)
-
 
 def draw_menu(items, descriptions):
     """Display all items and descriptions menu inside a dialog box."""
@@ -232,31 +237,43 @@ def percentage():
             draw_item(line + 1, items, descriptions, True)
             line += 1
         if keydown(4) or keydown(52):  # OK/EXE
-            if line == 0:
+            if line == 0:  # % Percentage of X
                 if entry and stack:
                     base = stack[0]
-                    evaluate2(lambda x, y: x*y / 100)
-                    push(base)
+                    evaluate2(lambda x, y: x*y / 100, False)
+                    push(base, False)
                     stack[0], stack[1] = stack[1], stack[0]
                 elif not entry and len(stack) >= 2:
                     base = stack[1]
-                    evaluate2(lambda x, y: x*y / 100)
-                    push(base)
+                    evaluate2(lambda x, y: x*y / 100, False)
+                    push(base, False)
                     stack[0], stack[1] = stack[1], stack[0]
-            elif line == 1: evaluate2(lambda x, y: (y-x) / x * 100)
-            elif line == 2:
+            elif line == 1:  # Δ% Percent difference
                 if entry and stack:
                     base = stack[0]
-                    evaluate2(lambda x, y: y/x * 100)
-                    push(base)
+                    evaluate2(lambda x, y: (y-x) / x * 100, False)
+                    push(base, False)
                     stack[0], stack[1] = stack[1], stack[0]
                 elif not entry and len(stack) >= 2:
                     base = stack[1]
-                    evaluate2(lambda x, y: y/x * 100)
-                    push(base)
+                    evaluate2(lambda x, y: (y-x) / x * 100, False)
+                    push(base, False)
                     stack[0], stack[1] = stack[1], stack[0]
-            elif line == 3: evaluate2(lambda x, y: x + x*y / 100)
-            elif line == 4: evaluate2(lambda x, y: (y-x) / y * 100)
+            elif line == 2:  # %T Percent of total
+                if entry and stack:
+                    base = stack[0]
+                    evaluate2(lambda x, y: y/x * 100, False)
+                    push(base, False)
+                    stack[0], stack[1] = stack[1], stack[0]
+                elif not entry and len(stack) >= 2:
+                    base = stack[1]
+                    evaluate2(lambda x, y: y/x * 100, False)
+                    push(base, False)
+                    stack[0], stack[1] = stack[1], stack[0]
+            elif line == 3:  # ±% Evolution, or markup on cost
+                evaluate2(lambda x, y: x + x*y / 100)
+            elif line == 4:  # MU%P Markup on price, or margin
+                evaluate2(lambda x, y: (y-x) / y * 100)
             quit = True; display()
         if keydown(5): quit = True; display()  # BACK
 
@@ -271,25 +288,28 @@ display()
 while True:
 
     # Characters the user may enter on the command line
-    if keydown(48): entry += "0"; display()
-    elif keydown(42): entry += "1"; display()
-    elif keydown(43): entry += "2"; display()
-    elif keydown(44): entry += "3"; display()
-    elif keydown(36): entry += "4"; display()
-    elif keydown(37): entry += "5"; display()
-    elif keydown(38): entry += "6"; display()
-    elif keydown(30): entry += "7"; display()
-    elif keydown(31): entry += "8"; display()
-    elif keydown(32): entry += "9"; display()
+    if keydown(48): entry += "0"; draw_command()
+    elif keydown(42): entry += "1"; draw_command()
+    elif keydown(43): entry += "2"; draw_command()
+    elif keydown(44): entry += "3"; draw_command()
+    elif keydown(36): entry += "4"; draw_command()
+    elif keydown(37): entry += "5"; draw_command()
+    elif keydown(38): entry += "6"; draw_command()
+    elif keydown(30): entry += "7"; draw_command()
+    elif keydown(31): entry += "8"; draw_command()
+    elif keydown(32): entry += "9"; draw_command()
     elif keydown(49):
         if not entry: entry = "0."
         else: entry += "."
-        display()
+        draw_command()
     elif keydown(50):
         if not entry: entry = "1e"
         else: entry += "e";
-        display()
-    elif keydown(27) and not entry: push(pi); display()
+        draw_command()
+    elif keydown(27):
+        if entry: push(entry); entry = ""; draw_command()
+        push(pi)
+        draw_stack(8, 0.2)
 
     # RPN-specific
     elif keydown(14):  # XNT
@@ -304,41 +324,43 @@ while True:
         display()
     elif keydown(51):  # Ans
         try:
-            if entry: stack.insert(0, python_int(entry))  # LastX
+            if entry: stack.insert(0, python_int(entry)); entry = ""  # LastX
         except Exception as message: draw_error(message)
         else: push(lastx); display()
     elif keydown(4) or keydown(52):  # OK/EXE
-        if entry: push(entry); entry = ""  # ENTER
-        elif stack: push(stack[0])  # DUP
-        display()
+        if entry: push(entry); entry = ""; display()  # ENTER
+        elif stack: push(stack[0]); draw_stack(8, 0.2)  # DUP
     elif keydown(17):  # BACKSPACE
-        if not entry and stack: drop()  # DROP stack top level
-        else: entry = entry[:-1]  # CLEAR last character on command line
-        display()
+        if not entry and stack: drop(); display(False)  # DROP stack top level
+        else: entry = entry[:-1]; draw_command()  # CLEAR last character on command line
     elif keydown(33):  # (: (n) ROLL down
         if entry:
             try: pos = float(entry)
             except Exception as message: draw_error(message)
             else:
-                entry = ""
                 if pos == int(pos) and int(pos) <= len(stack):
+                    entry = ""; draw_command()
                     stack.insert(int(pos-1), stack.pop(0))
+                    draw_stack(int(pos))
                 else:
                     draw_error("invalid stack level number")
-        elif len(stack) >= 2: stack.append(stack.pop(0))
-        display()
+        elif len(stack) >= 2: stack.append(stack.pop(0)); draw_stack(8, 0.2)
     elif keydown(34):  # ): SWAP
         if entry: push(entry); entry = ""
         if len(stack) >= 2: stack[0], stack[1] = stack[1], stack[0]
-        display()
+        draw_stack(2, 0.2)
     elif keydown(1):  # UP: selection of levels if stack is dynamic
         if not fixed and stack:
-            level = 0; select_stack(level); sleep(0.2)
+            level = 0; draw_register(level, 0.2, True)
             while level >= 0:
                 if keydown(1) and level < len(stack) - 1:  # UP
-                    level += 1; display(); select_stack(level)
+                    draw_register(level)
+                    draw_register(level + 1, 0.2, True)
+                    level += 1
                 if keydown(2):  # DOWN
-                    level -= 1; display(); select_stack(level)
+                    draw_register(level)
+                    if level > 0: draw_register(level - 1, 0.2, True)
+                    level -= 1
                 if keydown(17):  # BACKSPACE: DROP
                     stack = stack[level+1:]; level = -1
                 if keydown(4) or keydown(52):  # OK/EXE: PICK
@@ -346,11 +368,11 @@ while True:
                 if keydown(33):  # (: ROLL down
                     stack.insert(int(level), stack.pop(0)); level = -1
                 if keydown(5): level = -1  # BACK: exit selection mode
-            display()
+            draw_register(0)
 
     # Unary operators
     elif keydown(18):
-        if not entry and not stack: push(exp(1)); display()
+        if not entry and not stack: push(exp(1)); draw_register(0, 0.2)
         else: evaluate1(lambda x: exp(x))
     elif keydown(19): evaluate1(lambda x: log(x))
     elif keydown(20): evaluate1(lambda x: log10(x))
@@ -388,13 +410,14 @@ while True:
                         if pos == int(pos) and int(pos) <= len(stack):
                             stack.insert(0, stack.pop(int(pos)-1))
                         else: draw_error("invalid stack level number")
-                elif len(stack) >= 2: stack.insert(0, stack.pop())
-                pressed = True; display()
+                    display()
+                elif len(stack) >= 2: stack.insert(0, stack.pop()); display(False)
+                pressed = True
             if keydown(40): evaluate1(lambda x: 1/x); pressed = True  # DIVISION
             if keydown(46): evaluate1(lambda x: -x); pressed = True  # MINUS
             if keydown(51):  # Ans: OVER
                 if fixed or len(stack) >= 2: push(stack[1])
-                pressed = True; display()
+                pressed = True; display(False)
             if keydown(12): pressed = True; display()  # SHIFT
 
     # ALPHA operators
@@ -402,9 +425,9 @@ while True:
         pressed = False; draw_string("alpha", 270, 0, (255,254,255), (255,181,0)); sleep(0.2)
         while not pressed:
             if keydown(6):  # HOME
-                pressed = True; display(); draw_error(__version__)
+                pressed = True; display(False); draw_error(__version__)
             if keydown(17):  # %: Percentage functions
-                pressed = True; display(); percentage()
+                pressed = True; display(False); percentage()
             if keydown(20):  # C: Fahrenheit to Celsius
                 evaluate1(lambda x: (x-32) * 5/9); pressed = True
             if keydown(21):  # D: radians to degrees
@@ -415,24 +438,24 @@ while True:
                 evaluate1(lambda x: hms(x)); pressed = True
             if keydown(33):  # P: Prime factorisation
                 if not entry and stack:
-                    try: push(prime_facto(float(stack[0])))
+                    try: push(prime_facto(float(stack[0])), False)
                     except Exception as message: draw_error(message)
+                    display(False)
                 elif entry:
                     if float(entry) != int(float(entry)): draw_error("math domain error")
-                    else: push(float(entry)); push(prime_facto(float(entry))); entry = ""
-                pressed = True; display()
+                    else: push(float(entry)); push(prime_facto(float(entry)), False); entry = ""
+                    display()
+                pressed = True
             if keydown(36):  # R
                 evaluate1(lambda x: x * pi / 180); pressed = True
             if keydown(48):  # ?
                 if not entry: push(random())
-                pressed = True; display()
+                pressed = True; display(False)
             if keydown(49): evaluate1(lambda x: factorial(x)); pressed = True
-            if keydown(13): pressed = True; display()  # ALPHA
+            if keydown(13): pressed = True; display(False)  # ALPHA
 
     elif keydown(16): toolbox()
     elif keydown(15): varbox()
     elif keydown(6): quit()  # HOME
 
     blink_cursor()
-
-    sleep(0.06)
