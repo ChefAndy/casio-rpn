@@ -2,8 +2,9 @@
 
 Python script for the scientific Numworks calculator, enabling to type in RPN in a graphical user interface.
 
-### Test it & get it now
-On NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
+### Get it & test it now
+- Emulator on NumWorks website https://my.numworks.com/python/xanderleadaren/rpn
+- New to RPN? Follow the [excellent RPN Tutorial by Hans Klaver](https://hansklav.home.xs4all.nl/rpn/index.html)!
 
 ### Keystrokes
 - Basic operations are mapped to the usual keys.
