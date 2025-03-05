@@ -20,6 +20,8 @@ A remark for the [(] key, which emulates [R↓] of HP calculators:
 - with [shift], rotates the stack upwards
 - if an natural number `n` is on the command line, rotates only the first `n` stack levels
 
+Be careful that angles are set to degrees by default, as on many HP RPN-calculators. Use [R] or [D] to set to radians or back to degrees. There is no way to edit the top left yellow NumWorks indicator, however. 
+
 ### Two RPN stack variants
 On [x,n,t] key, the user may choose between two RPN variants:
 - Dynamic levels 1,2,3,… with infinite amount of inputs (default)
