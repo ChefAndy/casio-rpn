@@ -1,4 +1,4 @@
-__version__ = "2025-03-04 T 14:22 UTC+1"
+__version__ = "2025-03-05 T 09:22 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from time import sleep, monotonic
@@ -31,7 +31,7 @@ def python_trailing(value):
         if zeros >= 7: value = value[:last+1]
     # Remove Python-specific trailing 9s if possible
     if value.count(".") == 1 and value[-1] == "9":
-        nines = 9; last = -2
+        nines = 0; last = -2
         while value[last] == "9": nines += 1; last -= 1
         if nines >= 7:
             value = value[:last+1]
