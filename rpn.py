@@ -1,4 +1,4 @@
-__version__ = "2025-03-05 T 09:22 UTC+1"
+__version__ = "2025-03-05 T 10:22 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from time import sleep, monotonic
@@ -189,7 +189,7 @@ def draw_menu(items, descriptions):
 def varbox():
     """Display a dialog with functions mapped to ALPHA + some key."""
     keys = ("D", "R", "C", "F", "H", "P", "?")
-    desc = ("Convert rad to °", "Convert ° to rad", "Convert °F to °C", "Convert °C to °F", "Convert hrs to h:min", "Prime factorisation", "Random number in [0,1)")
+    desc = ("Set angles to degrees", "Set angles to radians", "Convert °F to °C", "Convert °C to °F", "Convert hrs to h:min", "Prime factorisation", "Random number in [0,1)")
     fill_rect(27, 27, 266, 21, (65,64,65))
     fill_rect(28, 28, 264, 19, (108,99,115))
     draw_string("Alpha shortcuts", 85, 28, (255,254,255), (108,99,115))
@@ -280,9 +280,10 @@ def percentage():
 
 # MAIN PROGRAM
 
-# Original state: dynamic empty stack, no lastX, empty entry command line
+# Original state: dynamic empty stack, no lastX, empty entry command line, angles in degrees
 fixed = False; stack = []
 lastx = ""; entry = ""
+degrees = True
 
 display()
 while True:
@@ -376,9 +377,15 @@ while True:
         else: evaluate1(lambda x: exp(x))
     elif keydown(19): evaluate1(lambda x: log(x))
     elif keydown(20): evaluate1(lambda x: log10(x))
-    elif keydown(24): evaluate1(lambda x: sin(x))
-    elif keydown(25): evaluate1(lambda x: cos(x))
-    elif keydown(26): evaluate1(lambda x: tan(x))
+    elif keydown(24):
+        if degrees: evaluate1(lambda x: sin(x * pi / 180))
+        else: evaluate1(lambda x: sin(x))
+    elif keydown(25):
+        if degrees: evaluate1(lambda x: cos(x * pi / 180))
+        else: evaluate1(lambda x: cos(x))
+    elif keydown(26):
+        if degrees: evaluate1(lambda x: tan(x * pi / 180))
+        else: evaluate1(lambda x: tan(x))
     elif keydown(28): evaluate1(lambda x: sqrt(x))
     elif keydown(29): evaluate1(lambda x: x*x)
 
@@ -398,9 +405,18 @@ while True:
             if keydown(17):  # BACKSPACE: CLEAR
                 stack = [0, 0, 0, 0] if fixed else []
                 entry = ""; pressed = True; display()
-            if keydown(24): evaluate1(lambda x: asin(x)); pressed = True
-            if keydown(25): evaluate1(lambda x: acos(x)); pressed = True
-            if keydown(26): evaluate1(lambda x: atan(x)); pressed = True
+            if keydown(24):
+                if degrees: evaluate1(lambda x: asin(x) * 180 / pi)
+                else: evaluate1(lambda x: asin(x))
+                pressed = True
+            if keydown(25):
+                if degrees: evaluate1(lambda x: acos(x) * 180 / pi)
+                else: evaluate1(lambda x: acos(x))
+                pressed = True
+            if keydown(26):
+                if degrees: evaluate1(lambda x: atan(x) * 180 / pi)
+                else: evaluate1(lambda x: atan(x))
+                pressed = True
             if keydown(33):  # (: ROLL up
                 if entry:
                     try: pos = float(entry)
@@ -411,14 +427,15 @@ while True:
                             stack.insert(0, stack.pop(int(pos)-1))
                         else: draw_error("invalid stack level number")
                     display()
-                elif len(stack) >= 2: stack.insert(0, stack.pop()); display(False)
+                elif len(stack) >= 2: stack.insert(0, stack.pop())
                 pressed = True
             if keydown(40): evaluate1(lambda x: 1/x); pressed = True  # DIVISION
             if keydown(46): evaluate1(lambda x: -x); pressed = True  # MINUS
             if keydown(51):  # Ans: OVER
                 if fixed or len(stack) >= 2: push(stack[1])
-                pressed = True; display(False)
-            if keydown(12): pressed = True; display()  # SHIFT
+                pressed = True
+            if keydown(12): pressed = True  # SHIFT
+        display(False)
 
     # ALPHA operators
     elif keydown(13):  # ALPHA
@@ -430,8 +447,8 @@ while True:
                 pressed = True; display(False); percentage()
             if keydown(20):  # C: Fahrenheit to Celsius
                 evaluate1(lambda x: (x-32) * 5/9); pressed = True
-            if keydown(21):  # D: radians to degrees
-                evaluate1(lambda x: x * 180 / pi); pressed = True
+            if keydown(21):  # D: Set angles to degrees
+                degrees = True; pressed = True; display(False)
             if keydown(23):  # F: Celsius to Fahrenheit
                 evaluate1(lambda x: x * 9/5 + 32); pressed = True
             if keydown(25):  # H
@@ -446,8 +463,8 @@ while True:
                     else: push(float(entry)); push(prime_facto(float(entry)), False); entry = ""
                     display()
                 pressed = True
-            if keydown(36):  # R
-                evaluate1(lambda x: x * pi / 180); pressed = True
+            if keydown(36):  # R: Set angles to radians
+                degrees = False; pressed = True; display(False)
             if keydown(48):  # ?
                 if not entry: push(random())
                 pressed = True; display(False)
