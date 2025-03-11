@@ -1,4 +1,4 @@
-__version__ = "2025-03-05 T 10:22 UTC+1"
+__version__ = "2025-03-11 T 13:13 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from time import sleep, monotonic
@@ -363,7 +363,7 @@ while True:
                     if level > 0: draw_register(level - 1, 0.2, True)
                     level -= 1
                 if keydown(17):  # BACKSPACE: DROP
-                    stack = stack[level+1:]; level = -1
+                    stack = stack[level:]; level = -1
                 if keydown(4) or keydown(52):  # OK/EXE: PICK
                     stack[0] = stack[level]; level = -1
                 if keydown(33):  # (: ROLL down
@@ -476,3 +476,4 @@ while True:
     elif keydown(6): quit()  # HOME
 
     blink_cursor()
+    
