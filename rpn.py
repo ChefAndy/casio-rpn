@@ -1,4 +1,4 @@
-__version__ = "2025-03-11 T 13:13 UTC+1"
+__version__ = "2025-03-11 T 13:28 UTC+1"
 
 from math import exp, log, log10, sin, asin, cos, acos, tan, atan, pi, sqrt
 from time import sleep, monotonic
@@ -49,6 +49,7 @@ def push(foo, history=True):
     else:
         if history: global lastx; lastx = foo
         stack.insert(0, top)
+    if fixed: stack.pop()
 
 def evaluate1(operation):
     """Evaluate unary operations."""
@@ -476,4 +477,3 @@ while True:
     elif keydown(6): quit()  # HOME
 
     blink_cursor()
-    
